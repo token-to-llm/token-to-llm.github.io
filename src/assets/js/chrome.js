@@ -152,14 +152,27 @@ function mountSidebar(activeId) {
   const el = document.querySelector('[data-chrome="sidebar"]');
   if (!el) return;
   el.innerHTML = renderDocSidebar(activeId);
-  const sideToggle = document.getElementById('side-toggle');
-  if (sideToggle) {
-    sideToggle.addEventListener('click', () => {
-      const s = document.querySelector('.sidebar');
-      const open = s.classList.toggle('is-open');
-      sideToggle.setAttribute('aria-expanded', String(open));
-    });
+
+  /* 窄屏下 .sidebar 是 display:none，而原代码在这里找一个从未被创建过的
+     #side-toggle —— 结果文档页在手机上完全没有入口切到别的章节。这里补上
+     按钮本身；桌面端由 CSS 隐藏，按钮只在 ≤900px 出现。 */
+  let sideToggle = document.getElementById('side-toggle');
+  if (!sideToggle) {
+    sideToggle = document.createElement('button');
+    sideToggle.type = 'button';
+    sideToggle.id = 'side-toggle';
+    sideToggle.className = 'side-toggle';
+    sideToggle.setAttribute('aria-expanded', 'false');
+    sideToggle.textContent = '文档目录';
+    el.parentNode.insertBefore(sideToggle, el);
+    if (!el.id) el.id = 'doc-sidebar';
+    sideToggle.setAttribute('aria-controls', el.id);
   }
+
+  sideToggle.addEventListener('click', () => {
+    const open = el.classList.toggle('is-open');
+    sideToggle.setAttribute('aria-expanded', String(open));
+  });
 }
 
 /* 手写页面的页内目录；markdown 页面走 MD.mountToc，这里是给 chapters / teaching 这类静态页用的。 */

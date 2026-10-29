@@ -524,6 +524,16 @@
     '</details>';
   }).join('');
 
+  /* 手机端三张卡一律收起：桌面那套“展开第一张当样板”在窄屏上会把后两张
+     推到几屏之外。CSS 里已有 display 兜底，这里补 open 属性，让 aria 与
+     折叠三角的状态和实际一致。只在首次加载时判断，不监听后续旋转 ——
+     读者手动展开过的卡片不该被旋屏重置。 */
+  if (window.matchMedia && window.matchMedia('(max-width: 700px)').matches) {
+    document.querySelectorAll('.writing-item[open]').forEach(function (el) {
+      el.removeAttribute('open');
+    });
+  }
+
   /* ---- 代码仓库：2×2，左边输出、右边画面 ---- */
   const CODE_CASES = [
     {
@@ -629,12 +639,12 @@
   /* 格子里铺的是 720px 缩略图（每张约 55–100KB），data-full 指向 1600px 全图，
      点开才拉。此前缩略图与灯箱共用同一张 1600px 原图，等于用小图的版面付大图的流量。 */
   const SAMPLES = [
-    { src: 'src/assets/img/sample-1.webp', thumb: 'src/assets/img/sample-1-thumb.webp', cap: '书页样张 1' },
-    { src: 'src/assets/img/sample-2.webp', thumb: 'src/assets/img/sample-2-thumb.webp', cap: '书页样张 2' },
-    { src: 'src/assets/img/sample-3.webp', thumb: 'src/assets/img/sample-3-thumb.webp', cap: '书页样张 3' },
-    { src: 'src/assets/img/sample-4.webp', thumb: 'src/assets/img/sample-4-thumb.webp', cap: '书页样张 4' },
-    { src: 'src/assets/img/sample-5.webp', thumb: 'src/assets/img/sample-5-thumb.webp', cap: '书页样张 5' },
-    { src: 'src/assets/img/sample-6.webp', thumb: 'src/assets/img/sample-6-thumb.webp', cap: '书页样张 6' },
+    { src: 'src/assets/img/sample-1.png', thumb: 'src/assets/img/sample-1-thumb.webp', cap: '书页样张 1' },
+    { src: 'src/assets/img/sample-2.png', thumb: 'src/assets/img/sample-2-thumb.webp', cap: '书页样张 2' },
+    { src: 'src/assets/img/sample-3.png', thumb: 'src/assets/img/sample-3-thumb.webp', cap: '书页样张 3' },
+    { src: 'src/assets/img/sample-4.png', thumb: 'src/assets/img/sample-4-thumb.webp', cap: '书页样张 4' },
+    { src: 'src/assets/img/sample-5.png', thumb: 'src/assets/img/sample-5-thumb.webp', cap: '书页样张 5' },
+    { src: 'src/assets/img/sample-6.png', thumb: 'src/assets/img/sample-6-thumb.webp', cap: '书页样张 6' },
   ];
   document.getElementById('home-samples').innerHTML = SAMPLES.map(function (s, i) {
     return '<button class="sample-shot" data-full="' + s.src + '" data-cap="' + s.cap + '">' +

@@ -737,6 +737,31 @@ hr {
   scrollbar-width: thin;
 }
 
+/* 窄屏的目录开关。桌面由 .sidebar 自身撑着，按钮不出现。 */
+.side-toggle {
+  display: none;
+  width: 100%;
+  padding: 11px 16px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.side-toggle::after {
+  content: '▾';
+  float: right;
+  color: var(--ink-3);
+}
+
+.side-toggle[aria-expanded='true']::after {
+  content: '▴';
+}
+
 .sidebar::-webkit-scrollbar {
   width: 5px;
 }
@@ -2963,6 +2988,12 @@ body.is-locked {
     grid-template-columns: 1fr;
     padding: 0 var(--gutter);
   }
+  /* 窄屏不常驻侧边栏：改成一个可展开的目录按钮，点开才铺在正文上方。
+     常驻会占掉近半屏宽，正文挤成一列窄条。 */
+  .side-toggle {
+    display: block;
+    margin: 22px 0 0;
+  }
   .sidebar {
     position: static;
     max-height: none;
@@ -3036,22 +3067,36 @@ body.is-locked {
   .sample-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+  /* 阶段条在窄屏仍然横排三列。竖排堆叠时"预训练 → 微调 → 对齐"读起来像
+     三个互不相干的段落，而它本来是一条先后相承的流程；横排才看得出顺序。
+     靠压字号、收右边距、把连接线缩短来腾出宽度，不改列数。 */
   .kmap-flow {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 4px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
     margin-bottom: 26px;
   }
   .kmap-step {
-    padding: 14px 0;
+    padding: 14px 12px 14px 0;
+  }
+  .kmap-step-no {
+    font-size: 0.64rem;
+    letter-spacing: 0.06em;
+  }
+  .kmap-step h3 {
+    font-size: 1rem;
+    margin: 4px 0 3px;
+  }
+  .kmap-step p {
+    font-size: 0.78rem;
+    line-height: 1.55;
+  }
+  .kmap-step em {
+    font-size: 0.68rem;
+    margin-top: 6px;
   }
   .kmap-step:not(:last-child)::after {
-    right: auto;
-    left: 0;
-    top: auto;
-    bottom: 0;
-    width: 100%;
-    height: 1px;
-    background: var(--line);
+    right: 6px;
+    width: 8px;
   }
   .writing-figs {
     grid-template-columns: minmax(0, 1fr);
@@ -3063,6 +3108,18 @@ body.is-locked {
   }
   .writing-body {
     padding: 4px 22px 24px;
+  }
+}
+
+/* 手机端：三张课程卡片一律收起。
+   桌面首屏会把第一张卡展开当“样板”，但窄屏下展开那张有近 2000px 高，
+   后续两张卡直接被推到几屏之外，读者要先划过一整篇才看得到目录。 */
+@media (max-width: 700px) {
+  .writing-item > .writing-body {
+    display: none;
+  }
+  .writing-item[open] > .writing-body {
+    display: block;
   }
 }
 
