@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>课时安排 — 大语言模型：训练、精调与对齐</title>
+<meta name="description" content="面向一学期 16 课时的教学安排建议：十章各次课对应的小节、拆分点与讲授要点。">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../assets/css/site.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%234C54A4'/><text x='16' y='22' font-family='sans-serif' font-size='14' font-weight='700' fill='white' text-anchor='middle'>LM</text></svg>">
+</head>
+<body>
+<div data-chrome="header"></div>
+
+<div class="docs-shell">
+  <aside class="sidebar" data-chrome="sidebar"></aside>
+  <main class="doc-main">
+    <div class="doc-body">
+      <div class="prose">
+        <h1>课时安排</h1>
+        <p>全书十章合计 900+ 页课件。按一学期 16 课时讲授时，建议把公式与推导密度最大的六章拆成上下两部分，其余四章各占一次课。下表给出每次课覆盖的小节、拆分点与讲授侧重。</p>
+        <p>拆分点都落在节的自然边界上，不切断一个完整方法的推导链；<b>课件本身不拆</b>，仍以整章 PDF 为单位分发。</p>
+      </div>
+
+      <div class="table-scroll"><table class="chapter-table" id="plan16" style="margin-top:28px"></table></div>
+
+      <div class="callout" style="margin-top:24px">
+        <span class="callout-title">课时伸缩</span>
+        课时更少时，可优先压缩第 3 章的附录与第 6 章的评估部分；课时更多时，第 7 章可按动态规划、时序差分、策略梯度三大类方法再细分为三次课。
+      </div>
+
+      <div class="prose" style="margin-top:48px">
+        <h2 id="h-read-order">按章阅读顺序</h2>
+        <p><b>第 1—4 章</b>：建立“语言模型—注意力—解码器模型”的主线，第 1 章术语密集，可先粗读。<br>
+        <b>第 5—6 章</b>：从微调讲到应用层，第 6 章的 RAG 与智能体可与第 8 章的对齐内容对照阅读。<br>
+        <b>第 7—8 章</b>：全书重心。第 7 章的策略梯度与演员-评论家是第 8 章 PPO、DPO 的前置。<br>
+        <b>第 9—10 章</b>：系统视角，可与第 4 章的键值缓存、第 2 章的多头注意力相互印证。</p>
+
+        <h2 id="h-slides">课件使用说明</h2>
+        <ul>
+          <li>课件以 <b>PDF</b> 格式提供，16:9 版式，无动画，可离线播放或直接投影。</li>
+          <li>每章一个 PDF，页数与书籍章节一一对应；正文中的图、表、公式与课件同源核对。</li>
+          <li>封面、章节分隔页、公式推导、代码对照与思考题按统一版式编排。</li>
+          <li>整章 PDF 见<a href="chapters.html">章节指引</a>各章卡片，或直接在<a href="https://github.com/token-to-llm/token-to-llm" target="_blank" rel="noopener">代码仓库 token-to-llm</a>中获取。</li>
+        </ul>
+      </div>
+    </div>
+  </main>
+  <nav class="doc-toc" data-chrome="toc" aria-label="本页目录"></nav>
+</div>
+
+<div data-chrome="footer"></div>
+
+<script src="../assets/js/site.config.js"></script>
+<script src="../assets/js/chapters.js"></script>
+<script src="../assets/js/chrome.js"></script>
+<script>
+(function () {
+  mountChrome({ page: 'docs' });
+  mountSidebar('teaching');
+  mountTocFromDom();
+
+  const rows = [];
+  let i = 0;
+  CHAPTERS.forEach(function (c) {
+    const total = CHAPTERS.length;
+    if (c.split16) {
+      const halves = [
+        { label: '（上）', secs: c.split16.upper, note: (c.split16.note.split('；')[0] || '').replace(/^上：/, '') },
+        { label: '（下）', secs: c.split16.lower, note: (c.split16.note.split('；')[1] || '').replace(/^下：/, '') },
+      ];
+      halves.forEach(function (h, k) {
+        i++;
+        rows.push(
+          '<tr>' +
+          '<td class="ch-no">' + String(i).padStart(2, '0') + '</td>' +
+          '<td class="ch-name">' + c.title + h.label + '</td>' +
+          '<td class="ch-sec">' + h.secs.join('、') + '</td>' +
+          '<td style="font-size:.86rem">' + h.note + '</td>' +
+          '</tr>'
+        );
+      });
+    } else {
+      i++;
+      rows.push(
+        '<tr>' +
+        '<td class="ch-no">' + String(i).padStart(2, '0') + '</td>' +
+        '<td class="ch-name">' + c.title + '</td>' +
+        '<td class="ch-sec">' + c.sections.filter(function (s) { return s.title.indexOf('附录') < 0; }).map(function (s) { return s.no; }).join('、') + '</td>' +
+        '<td style="font-size:.86rem">' + c.sections[0].note + '</td>' +
+        '</tr>'
+      );
+    }
+  });
+
+  document.getElementById('plan16').innerHTML =
+    '<thead><tr><th>序</th><th>内容</th><th>覆盖小节</th><th>讲授侧重</th></tr></thead><tbody>' + rows.join('') + '</tbody>';
+})();
+</script>
+</body>
+</html>

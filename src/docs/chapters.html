@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>章节指引 — 大语言模型：训练、精调与对齐</title>
+<meta name="description" content="全书十章逐节目录、课件页数，以及面向 16 课时大学课堂的教学拆分建议。">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../assets/css/site.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%234C54A4'/><text x='16' y='22' font-family='sans-serif' font-size='14' font-weight='700' fill='white' text-anchor='middle'>LM</text></svg>">
+</head>
+<body>
+<div data-chrome="header"></div>
+
+<div class="docs-shell">
+  <aside class="sidebar" data-chrome="sidebar"></aside>
+  <main class="doc-main">
+    <div class="doc-body">
+      <div class="prose">
+        <h1>章节指引</h1>
+        <p>全书十章。每章给出节级目录与课件页码；节标题与书稿编号一致，带“*”的为可跳过的专题或附录。</p>
+      </div>
+
+      <div id="chapter-list" style="margin-top:36px"></div>
+
+      <div class="prose" style="margin-top:56px" id="how-to-plan">
+        <h2 id="h-how-plan">如何安排课时</h2>
+        <p>全书十章按知识依赖顺序组织，但章节篇幅差异很大：第 2、4、7、8、9、10 章的公式与推导密度明显高于其余四章。若按一学期 16 次课讲授，建议把密度最大的六章拆成上下两次课，其余四章各一次课。</p>
+        <p>完整的课时分配表、每次课对应的小节与拆分理由，见 <a href="teaching.html">课时安排</a>。</p>
+      </div>
+
+      <div class="callout" style="margin-top:24px">
+        <span class="callout-title">关于拆分</span>
+        拆分只是<b>课时规划建议</b>，拆分点落在节的自然边界上；<b>课件本身不拆</b>，仍以整章 PDF 为单位分发。
+      </div>
+
+      <div class="prose" style="margin-top:48px">
+        <h2 id="h-slides">课件使用说明</h2>
+        <ul>
+          <li>课件以 <b>PDF</b> 格式提供，16:9 版式，无动画，可离线播放或直接投影。</li>
+          <li>每章一个 PDF，页数与书籍章节一一对应，正文中的图、表、公式与课件同源核对。</li>
+          <li>封面、章节分隔页、公式推导、代码对照与思考题按统一版式编排。</li>
+          <li>整章 PDF 见各章卡片中的“下载课件 PDF”，或直接在<a href="https://github.com/token-to-llm/token-to-llm" target="_blank" rel="noopener">代码仓库 token-to-llm</a>中获取。</li>
+        </ul>
+
+        <h2 id="h-read-order">按章阅读顺序</h2>
+        <p><b>第 1—4 章</b>：建立“语言模型—注意力—解码器模型”的主线，第 1 章术语密集，可先粗读。<br>
+        <b>第 5—6 章</b>：从微调讲到应用层，第 6 章的 RAG 与智能体可与第 8 章的对齐内容对照阅读。<br>
+        <b>第 7—8 章</b>：全书重心。第 7 章的策略梯度与演员-评论家是第 8 章 PPO、DPO 的前置。<br>
+        <b>第 9—10 章</b>：系统视角，可与第 4 章的键值缓存、第 2 章的多头注意力相互印证。</p>
+      </div>
+    </div>
+  </main>
+  <nav class="doc-toc" data-chrome="toc" aria-label="本页目录"></nav>
+</div>
+
+<div data-chrome="footer"></div>
+
+<script src="../assets/js/site.config.js"></script>
+<script src="../assets/js/chapters.js"></script>
+<script src="../assets/js/chrome.js"></script>
+<script>
+(function () {
+  mountChrome({ page: 'docs' });
+  mountSidebar('chapters');
+  mountTocFromDom();
+
+  const list = document.getElementById('chapter-list');
+  list.innerHTML = CHAPTERS.map(function (c) {
+    const rows = c.sections.map(function (s) {
+      const isStar = s.no.indexOf('*') > -1 || s.title.indexOf('附录') > -1;
+      return '<tr>' +
+        '<td class="ch-no" style="width:auto">' + s.no + '</td>' +
+        '<td style="color:' + (isStar ? 'var(--ink-3)' : 'var(--ink)') + '">' + s.title + '</td>' +
+        '<td style="font-size:.86rem">' + s.note + '</td>' +
+        '<td style="text-align:right;white-space:nowrap;font-size:.84rem;color:var(--ink-3)">' + (s.slide ? 'p.' + s.slide : '') + '</td>' +
+        '</tr>';
+    }).join('');
+
+    const split = c.split16
+      ? '<div class="chip chip--accent">建议拆为 2 次课</div>'
+      : '';
+
+    return '<div class="card" style="margin-bottom:20px;padding:0;overflow:hidden">' +
+      '<div style="padding:22px 26px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;flex-wrap:wrap">' +
+        '<span style="font-family:var(--serif);font-size:1.6rem;font-weight:700;color:var(--tint-primary-strong);line-height:1">' +
+          (c.n < 10 ? '0' + c.n : c.n) + '</span>' +
+        '<div style="flex:1;min-width:180px">' +
+          '<h3 style="margin:0;font-size:1.1rem">' + c.title + '</h3>' +
+          '<div style="font-size:.8rem;color:var(--ink-3);margin-top:2px">' + c.sections.length + ' 节 · 课件 ' + c.ppt + '</div>' +
+        '</div>' + split +
+      '</div>' +
+      '<div class="table-scroll"><table class="chapter-table"><tbody>' + rows + '</tbody></table></div>' +
+      '<div style="padding:12px 26px;border-top:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap">' +
+        '<a class="btn btn-sm" href="' + SITE.repo.url + '/tree/' + SITE.repo.branch + '/src/" target="_blank" rel="noopener">本章代码</a>' +
+        '<a class="btn btn-sm" href="' + SITE.repo.url + '/blob/' + SITE.repo.branch + '/ppt/' + c.ppt + '" target="_blank" rel="noopener">下载课件 PDF</a>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+})();
+</script>
+</body>
+</html>

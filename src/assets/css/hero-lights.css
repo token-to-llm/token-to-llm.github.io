@@ -1,0 +1,96 @@
+/* ==========================================================================
+   hero-lights.css —— 首屏 hero 的“呼吸灯”装饰层
+   --------------------------------------------------------------------------
+   配套脚本：assets/js/hero-lights.js（自挂载，找不到 .hero 时静默退出）
+   配色一律取自 assets/css/site.css 的 :root 变量，不新增色值。
+   本文件不改 .hero 的 padding / max-width / grid，也不碰 .hero-grid 的层级，
+   只做“垫底的一点光”：整层 absolute + inset:0 + pointer-events:none。
+   二十颗的位置写死在脚本的常量表里，这里只负责把变量变成画面。
+   ========================================================================== */
+
+/* ---------- 0. 层叠关系 ----------------------------------------------------
+   .hero（site.css 里已有 position:relative; overflow:hidden）
+     ├─ .hero-lights          z-index: 0  ← 全幅呼吸灯，永远垫在最底下
+     └─ .hero-grid            z-index: 1  ← 正文（hero-geo.css 已抬到装饰层上）
+   所以本层只补 position / inset / z-index，不改变任何盒模型。
+   -------------------------------------------------------------------------- */
+.hero-lights {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  /* 静态属性再由脚本内联写一份，避免 CSS 未到时闪烁 */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* 兜底：首页由 hero-geo.css 把 .hero-grid 抬到 z-index:1；单独引入本模块时
+   那条规则不在，这里补一份等价的声明，保证光点垫在正文之下。
+   与 hero-geo.css 中的同名规则一致，两者并存不冲突。 */
+.hero > .hero-grid {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- 1. 单颗字形 ----------------------------------------------------
+   位置 / 字号走自定义属性，由脚本写进内联 style。
+   刻意不用内联 left/top/font-size：媒体查询里的普通声明打不过内联样式，
+   写成变量后断点才能正常接手（例如窄屏把整体字号压小）。
+
+   呼吸的形态是“换字”，不是“明暗”：字形全程满色不透明 ——
+   这里没有任何 opacity、没有任何 keyframes，颜色取的是 ink 档，
+   比 --primary / --accent 再深一档，白底上看得清、也和正文黑度统一。
+   字形由脚本在 · ✢ ✳ ✶ ✻ ✽ 之间快速轮换，像终端里的 spinner。
+   形态取 Claude Code 转场那套极细笔画符号，系统字体渲染，
+   file:// 双击打开也一样显示得出来。 */
+.hl-glyph {
+  position: absolute;
+  left: var(--hl-x, 50%);
+  top: var(--hl-y, 50%);
+  transform: translate(-50%, -50%);
+  /* 符号本身没有行高诉求，压到 1 免得吃掉空间 */
+  line-height: 1;
+  font-size: var(--hl-fs, 13px);
+  font-family: var(--sans);
+  color: var(--primary-ink);
+  /* 字形是等宽的方框字符，定宽可以保证换字时左右不抖 */
+  text-align: center;
+  /* 换字只改 textContent，不加过渡 —— 让它是“跳变”，像终端里的 spinner */
+}
+
+.hl-glyph--accent {
+  color: var(--accent-ink);
+}
+
+/* ---------- 3. 窄屏降级 ----------------------------------------------------
+   700px 以下首屏变单列，正文占满整幅。
+   只留八颗：四角各一颗 + 左右两侧四颗，避开标题与按钮的落点；
+   其余全部隐藏，字号整体压到原来的八成左右，免得在窄屏上显得突兀。 */
+@media (max-width: 700px) {
+  .hl-glyph {
+    font-size: calc(var(--hl-fs, 13px) * 0.8);
+  }
+
+  /* 保留八颗：1 左上角、4 左下角、6 左中、12 中右、14 右下角、
+     15 右上、18 右上偏内、20 右缘大锚点；
+     其余 12 颗隐藏 —— 单列后正文占满整幅，中间区再多就是干扰。 */
+  .hl-glyph:nth-child(2),
+  .hl-glyph:nth-child(3),
+  .hl-glyph:nth-child(5),
+  .hl-glyph:nth-child(7),
+  .hl-glyph:nth-child(8),
+  .hl-glyph:nth-child(9),
+  .hl-glyph:nth-child(10),
+  .hl-glyph:nth-child(11),
+  .hl-glyph:nth-child(13),
+  .hl-glyph:nth-child(16),
+  .hl-glyph:nth-child(17),
+  .hl-glyph:nth-child(19) {
+    display: none;
+  }
+}
+
+/* ---------- 4. 减少动态 ----------------------------------------------------
+   本层没有 CSS 动画，字形轮换由脚本按 matchMedia 判断：
+   开启“减少动态”时每颗停在序列的第一个符号上，亮度仍恒定。 */

@@ -1,10 +1,947 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <title>Hello World</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>大语言模型：训练、精调与对齐 — 杨耀东 · 邓杭 著</title>
+<meta name="description" content="《大语言模型：训练、精调与对齐》由清华大学出版社出版，结合北京大学首门系统讲授大语言模型的课程讲义，从语言模型基础、预训练、微调、强化学习对齐到训练与推理系统，配 900+ 页教学课件与可运行开源代码。">
+<link rel="canonical" href="https://token-to-llm.github.io/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="大语言模型：训练、精调与对齐">
+<meta property="og:description" content="把公式、伪代码与可运行代码串成同一条路径。清华大学出版社出版，配 900+ 页教学课件。">
+<meta property="og:image" content="src/assets/img/cover-art.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="src/assets/css/site.css">
+<link rel="stylesheet" href="src/assets/css/cartpole-play.css">
+<link rel="stylesheet" href="src/assets/css/orbit-field.css">
+<link rel="stylesheet" href="src/assets/css/hero-geo.css">
+<link rel="stylesheet" href="src/assets/css/hero-lights.css">
+<link rel="stylesheet" href="src/assets/css/slides-panel.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%234C54A4'/><text x='16' y='22' font-family='sans-serif' font-size='14' font-weight='700' fill='white' text-anchor='middle'>LM</text></svg>">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Book",
+  "name": "大语言模型：训练、精调与对齐",
+  "inLanguage": "zh-CN",
+  "author": [{"@type": "Person", "name": "杨耀东", "url": "https://www.yangyaodong.com/"}, {"@type": "Person", "name": "邓杭"}],
+  "publisher": {"@type": "Organization", "name": "清华大学出版社"},
+  "isbn": "978-7-302-71036-3",
+  "numberOfPages": 900,
+  "bookEdition": "第 1 版"
+}
+</script>
 </head>
 <body>
-  <h1>Hello World</h1>
+<div data-chrome="header"></div>
+
+<noscript>
+  <div class="container" style="padding:16px 0;">
+    <p><b>导航需要启用 JavaScript。</b>你也可以直接访问：
+      <a href="src/docs/index.html">文档</a> ·
+      <a href="src/docs/examples.html">运行示例</a> ·
+      <a href="src/contact/index.html">联系</a> ·
+      <a href="index.html#buy">购买</a>
+    </p>
+  </div>
+</noscript>
+
+<!-- ============ 1. 主视觉 ============ -->
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <span class="eyebrow">清华大学出版社 · 计算机教材</span>
+      <h1>大语言模型：<br>训练、精调与对齐</h1>
+      <p class="hero-sub">结合北京大学首门系统讲授大语言模型的课程讲义，用一套完整的体系把公式、伪代码与可运行代码串成同一条路径。</p>
+      <div class="hero-tags">
+        <span class="chip">10 章 · 16 课时</span>
+        <span class="chip">900+ 页课件</span>
+        <span class="chip chip--accent">北大课程讲义</span>
+        <span class="chip">开源代码</span>
+      </div>
+      <div class="hero-actions">
+        <a class="btn btn-primary btn-lg" href="#buy">购买本书</a>
+        <a class="btn btn-lg" href="src/docs/index.html">文档</a>
+        <a class="btn btn-lg" href="https://github.com/token-to-llm/token-to-llm" target="_blank" rel="noopener">token-to-llm 仓库</a>
+      </div>
+      <div class="hero-meta">
+        <span><b>作者</b>　杨耀东　邓杭</span>
+        <span><b>出版</b>　清华大学出版社</span>
+        <span><b>ISBN</b>　978-7-302-71036-3</span>
+      </div>
+    </div>
+    <div class="hero-art">
+      <img src="src/assets/img/book-3d.png" alt="《大语言模型：训练、精调与对齐》立体书样" width="420" height="520">
+    </div>
+  </div>
+</section>
+
+<div class="stats">
+  <div class="stat"><div class="stat-num">10</div><div class="stat-label">章 · 16 课时</div></div>
+  <div class="stat"><div class="stat-num">900+</div><div class="stat-label">页教学课件</div></div>
+  <div class="stat"><div class="stat-num">400+</div><div class="stat-label">编号公式</div></div>
+  <div class="stat"><div class="stat-num">337</div><div class="stat-label">篇参考文献</div></div>
+</div>
+
+<!-- ============ 2. 推荐辞 ============ -->
+<section class="section">
+  <div class="container">
+    <div class="section-head is-center">
+      <span class="eyebrow">推荐</span>
+      <h2>北清复交哈联袂推荐</h2>
+    </div>
+    <div class="quote-lead-wrap" id="home-quotes"></div>
+  </div>
+</section>
+
+<!-- ============ 3. 知识体系 ============ -->
+<section class="section section--tint" id="kmap-section">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">知识体系</span>
+      <h2 id="kmap-title">知识体系：以学习范式、模型与算法、系统实现 3 个维度贯通训练 PT、SFT、RL 三阶段</h2>
+      <p>横向是学习的先后：预训练、微调、对齐；纵向是每本书都要交代的三件事——能力靠什么信号学出来，接到哪套结构与目标上，又如何在硬件上跑得动。</p>
+    </div>
+
+    <div class="kmap">
+      <div class="kmap-flow" id="kmap-stages"></div>
+      <div class="kmap-dims" id="kmap-dims"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4. 目录（可折叠） ============ -->
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">目录</span>
+      <h2>全书十章，逐节列出</h2>
+      <p>第 1—4 章打基础与预训练，第 5—6 章讲微调与应用，第 7—8 章是全书重心的强化学习与对齐，第 9—10 章落到训练与推理系统。点击章节可展开小节。</p>
+    </div>
+
+    <div class="chapter-fold" id="home-chapters"></div>
+
+    <div style="margin-top:28px;display:flex;gap:12px;flex-wrap:wrap">
+      <a class="btn" href="src/docs/chapters.html">完整章节指引</a>
+      <a class="btn" href="src/docs/teaching.html">课时安排</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5. 课本内容 ============ -->
+<section class="section section--tint" id="book-content">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">课本内容</span>
+      <h2>层层深入，如何讲透一个算法知识点？</h2>
+      <p>多数教材讲一个算法，止步于“它是什么、有什么好处”。本书从问题动机出发，落到定义，再把“为什么非要这样写”推成可验算的式子，最后给出实现上的取舍。下面三个例子取自不同章节，走的是同一条路：<b>问题动机 → 定义出发 → 算法推导 → 实现技巧</b>。点击标题展开。</p>
+    </div>
+
+    <div class="writing-list" id="home-writing"></div>
+  </div>
+</section>
+
+<!-- ============ 6. 书页样张 ============ -->
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">书页样张</span>
+      <h2>样张：公式、算法框、表格与代码的版面</h2>
+      <p>六页样张取自书稿，覆盖公式推导、算法框、表格、代码与图示。点击任意一页可放大查看。</p>
+    </div>
+    <div class="sample-grid" id="home-samples"></div>
+  </div>
+</section>
+
+<!-- ============ 7. 配套资源 ============ -->
+<section class="section section--tint">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">配套资源</span>
+      <h2>完整代码与运行示例</h2>
+    </div>
+    <div class="grid grid-2">
+      <a class="card card-link" href="https://github.com/token-to-llm/token-to-llm" target="_blank" rel="noopener">
+        <h3>开源代码仓库</h3>
+        <p>仓库按章组织，<code>src/</code> 下每个 <code>.py</code> 对应书中一处算法或一幅插图；仅依赖 PyTorch 与 Matplotlib，无需额外环境。</p>
+        <div class="tag-row"><span class="chip">PyTorch</span><span class="chip">逐章可运行</span><span class="chip">开源</span></div>
+      </a>
+      <a class="card card-link" href="src/docs/chapters.html">
+        <h3>教学课件</h3>
+        <p>十章各一套 PDF 课件，合计 900+ 页，覆盖从宏观结构到单条公式。公式与插图均按教材原文核对。</p>
+        <div class="tag-row"><span class="chip">16:9 PDF</span><span class="chip">离线可用</span><span class="chip">逐章分发</span></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 8. 代码仓库 ============ -->
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">代码</span>
+      <h2>代码仓库：<a href="https://github.com/token-to-llm/token-to-llm" target="_blank" rel="noopener" class="title-link">token-to-llm</a></h2>
+      <p>每个脚本都对应书里一处算法或一幅插图，下面的输出来自真实运行。运行方式与完整说明按知识点分成六页，见运行示例。</p>
+    </div>
+
+    <div class="code-grid" id="home-code"></div>
+
+    <div style="margin-top:28px;display:flex;gap:12px;flex-wrap:wrap">
+      <a class="btn" href="src/docs/examples.html">运行示例索引</a>
+      <a class="btn" href="https://github.com/token-to-llm/token-to-llm" target="_blank" rel="noopener">在 GitHub 打开 token-to-llm</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 9. 课件墙 ============ -->
+<section class="section section--tint">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">教学课件</span>
+      <h2>配套课件（部分）</h2>
+      <p>与教材章节一一对应，16:9 PDF，无动画，离线可用。可以先翻图片预览，也可以直接在页内翻整本 PDF。</p>
+    </div>
+
+    <!-- 由 src/assets/js/slides-panel.js 接管：图片预览 / PDF 浏览 两个 tab。
+         容器不再带 .ppt-wall —— 网格由面板自己排，外层只做挂载点。 -->
+    <div id="home-ppt"></div>
+
+    <div style="margin-top:28px;display:flex;gap:12px;flex-wrap:wrap">
+      <a class="btn" href="src/docs/chapters.html">全部十章课件</a>
+      <a class="btn" href="https://github.com/token-to-llm/token-to-llm" target="_blank" rel="noopener">在 token-to-llm 查看</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 10. 作者 ============ -->
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">作者</span>
+      <h2>作者介绍</h2>
+    </div>
+    <div class="author-grid">
+      <article class="author-card">
+        <div class="avatar"><img src="src/assets/img/author-yang.png" alt="杨耀东" width="270" height="270" loading="lazy"></div>
+        <div>
+          <h3>杨耀东</h3>
+          <div class="author-role">北京大学人工智能研究院研究员（博雅学者）· 博士生导师</div>
+          <div class="author-role author-role--extra">灵初智能有限公司联合创始人兼首席科学家</div>
+          <p>长期从事强化学习与对齐研究，代表性成果包括 PKU-Beaver、BeaverTails、Safe RLHF、Aligner 与 OmniSafe。大模型对齐综述提出 RICE 原则；论文《Language Models Resist Alignment》获 ACL 2025 最佳论文奖。自 2022 年起位列 CSRankings 北京大学 AI/ML 方向学者首位。</p>
+          <p style="font-size:.84rem;color:var(--ink-3)">在北京大学开设首门系统讲授大语言模型的课程《大语言模型基础与对齐》，获北京大学教学成果奖二等奖。</p>
+          <div class="author-links">
+            <a href="https://www.yangyaodong.com/" target="_blank" rel="noopener">个人主页</a>
+            <a href="mailto:yaodong.yang@pku.edu.cn">yaodong.yang@pku.edu.cn</a>
+          </div>
+        </div>
+      </article>
+      <article class="author-card">
+        <div class="avatar"><img src="src/assets/img/author-deng.png" alt="邓杭" width="564" height="564" loading="lazy"></div>
+        <div>
+          <h3>邓杭</h3>
+          <div class="author-role">北京大学 PAIR-Lab 科研助理</div>
+          <p>专注人工智能算法研发与工程实践，曾负责鹏城脑海 33B 大模型对齐工作，搭建开源框架 X-R1，完整复现 0.5B 模型的“顿悟时刻”。以<span class="author-brand">“小冬瓜 AIGC”</span>为名输出原创技术博客，主讲的<span class="author-brand">“手撕 LLM”</span>系列课程已帮助学员进入 OpenAI、Meta 与字节跳动等企业。</p>
+          <div class="author-links">
+            <a href="https://github.com/dhcode-cpp" target="_blank" rel="noopener">GitHub</a>
+            <a href="mailto:dhcode95@gmail.com">dhcode95@gmail.com</a>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <!-- 联系方式只留一个入口，放在两张卡之外：卡内重复两次反而让读者要多找一次 -->
+    <div class="author-contact">
+      <a class="btn btn-sm" href="src/contact/index.html">联系方式</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 11. 购买 ============ -->
+<section class="section section--tint" id="buy">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">购买</span>
+      <h2>购买信息</h2>
+      <p>纸质版由清华大学出版社出版，京东、淘宝 / 天猫与当当同步销售。扫码或点“前往购买”直达商品页。</p>
+    </div>
+    <div class="shop-grid" id="home-shops"></div>
+
+    <div class="callout" style="margin-top:28px">
+      <span class="callout-title">批量与教材采用</span>
+      院校批量订购、教师索取样书与课件授权，请走<a href="src/contact/index.html">联系页面</a>。
+    </div>
+  </div>
+</section>
+
+<div data-chrome="footer"></div>
+
+<!-- 图片放大层 -->
+<div class="lightbox" id="lightbox" hidden>
+  <button class="lightbox-close" aria-label="关闭预览">×</button>
+  <figure class="lightbox-inner">
+    <img id="lightbox-img" src="" alt="">
+    <figcaption id="lightbox-cap"></figcaption>
+  </figure>
+</div>
+
+<!-- 右下角上箭头：回到顶部，并重放一次标题的打字效果。滚过首屏才显形 -->
+<div class="float-tools">
+  <button type="button" class="float-btn" id="to-top" aria-label="回到顶部并重放打字效果" title="回到顶部 · 重放打字效果">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+  </button>
+</div>
+
+<script src="src/assets/js/site.config.js"></script>
+<script src="src/assets/js/chapters.js"></script>
+<script src="src/assets/js/chrome.js"></script>
+<script src="src/assets/js/highlight-blocks.js"></script>
+<script src="src/assets/data/cartpole-run.js"></script>
+<script src="src/assets/js/cartpole-play.js"></script>
+<script src="src/assets/js/orbit-field.js"></script>
+<script src="src/assets/js/hero-geo.js"></script>
+<script src="src/assets/js/hero-lights.js"></script>
+<script src="src/assets/js/slides-panel.js"></script>
+<script>
+(function () {
+  mountChrome({ page: 'home' });
+  /* ---- 推荐辞：卡片上只放一两句摘要，点“展开全文”才出整段 ---- */
+  const qs = SITE.quotes;
+  document.getElementById('home-quotes').innerHTML =
+    '<div class="quote-rail">' +
+      '<div class="quote-track" id="quote-track" tabindex="0" aria-label="推荐辞，可左右滚动">' +
+        qs.map(function (q) {
+          return '<article class="quote-card">' +
+            '<div class="quote-by">' +
+              '<b>' + q.who + '</b><span>' + q.role + '</span>' +
+            '</div>' +
+            '<p class="quote-lead">' + (q.lead || q.text) + '</p>' +
+            '<details class="quote-fold">' +
+              '<summary>展开全文</summary>' +
+              '<p class="quote-text">' + q.text + '</p>' +
+            '</details>' +
+          '</article>';
+        }).join('') +
+      '</div>' +
+      '<div class="quote-nav">' +
+        '<button type="button" id="quote-prev" aria-label="上一张推荐辞">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>' +
+        '</button>' +
+        '<button type="button" id="quote-next" aria-label="下一张推荐辞">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>' +
+        '</button>' +
+      '</div>' +
+    '</div>';
+
+  (function quoteRail() {
+    const track = document.getElementById('quote-track');
+    const prev = document.getElementById('quote-prev');
+    const next = document.getElementById('quote-next');
+    if (!track || !prev || !next) return;
+
+    /* 默认收起：卡片只显示摘要，点“展开全文”才铺开整段 */
+    const folds = [...track.querySelectorAll('details')];
+    const sync = function () {
+      const max = track.scrollWidth - track.clientWidth - 1;
+      prev.disabled = track.scrollLeft <= 1;
+      next.disabled = track.scrollLeft >= max;
+    };
+    const step = function (dir) {
+      const card = track.querySelector('.quote-card');
+      const w = card ? card.getBoundingClientRect().width + 18 : track.clientWidth * 0.5;
+      track.scrollBy({ left: dir * w, behavior: 'smooth' });
+    };
+
+    /* 一次只展开一张：六段长评同时铺开会把卡片撑出不同高度 */
+    folds.forEach(function (d) {
+      d.addEventListener('toggle', function () {
+        if (!d.open) return;
+        folds.forEach(function (o) { if (o !== d) o.open = false; });
+        requestAnimationFrame(sync);
+      });
+    });
+
+    prev.addEventListener('click', function () { step(-1); });
+    next.addEventListener('click', function () { step(1); });
+    track.addEventListener('scroll', sync, { passive: true });
+    window.addEventListener('resize', sync);
+    sync();
+  })();
+
+  /* ---- 知识体系：三阶段一横排，三个维度各自一张卡 ---- */
+  const KMAP = [
+    {
+      stage: '预训练',
+      cn: '能力从何而来',
+      chapters: '第 1—4 章',
+      cells: {
+        paradigm: '自监督预训练 · 下一词预测',
+        model: 'Transformer · 注意力 · 缩放定律',
+        system: '分布式训练 · 混合并行 · 显存优化',
+      },
+    },
+    {
+      stage: '微调',
+      cn: '能力如何适配',
+      chapters: '第 5—6 章',
+      cells: {
+        paradigm: '有监督微调 · 参数高效微调',
+        model: '提示工程 · 思维链 · RAG · 智能体',
+        system: 'LoRA · 量化适配 · 推理服务',
+      },
+    },
+    {
+      stage: '对齐',
+      cn: '行为如何塑形',
+      chapters: '第 7—8 章',
+      cells: {
+        paradigm: '强化学习 · RLHF · RLVR',
+        model: 'PPO · DPO · GRPO · 推理模型',
+        system: '训练与推理系统 · 加速与压缩',
+      },
+    },
+  ];
+  const DIMS = [
+    { key: 'paradigm', no: '维度 01', name: '学习范式', note: '能力靠什么信号学出来。' },
+    { key: 'model', no: '维度 02', name: '模型与算法', note: '把信号接到哪套结构与目标上。' },
+    { key: 'system', no: '维度 03', name: '系统实现', note: '同样的算法如何在硬件上跑得动。' },
+  ];
+  document.getElementById('kmap-stages').innerHTML =
+    KMAP.map(function (s, i) {
+      return '<div class="kmap-step">' +
+        '<div class="kmap-step-no">阶段 0' + (i + 1) + '</div>' +
+        '<h3>' + s.stage + '</h3>' +
+        '<p>' + s.cn + '</p>' +
+        '<em>' + s.chapters + '</em>' +
+      '</div>';
+    }).join('');
+  document.getElementById('kmap-dims').innerHTML =
+    DIMS.map(function (d) {
+      return '<div class="kmap-dim">' +
+        '<div class="kmap-dim-no">' + d.no + '</div>' +
+        '<h3>' + d.name + '</h3>' +
+        '<p>' + d.note + '</p>' +
+        '<dl>' +
+          KMAP.map(function (s) {
+            return '<div><dt>' + s.stage + '</dt><dd>' + s.cells[d.key] + '</dd></div>';
+          }).join('') +
+        '</dl>' +
+      '</div>';
+    }).join('');
+
+  /* ---- 目录：可折叠卡片 ---- */
+  document.getElementById('home-chapters').innerHTML = CHAPTERS.map(function (c) {
+    const secs = c.sections.map(function (s) {
+      return '<li><span class="fold-no">' + s.no + '</span><span class="fold-title">' + s.title + '</span></li>';
+    }).join('');
+    return '<details class="fold-card">' +
+      '<summary>' +
+        '<span class="fold-idx">' + String(c.n).padStart(2, '0') + '</span>' +
+        '<span class="fold-name">' + c.title + '</span>' +
+        '<span class="fold-meta">' + c.sections.length + ' 节</span>' +
+      '</summary>' +
+      '<ul class="fold-body">' + secs + '</ul>' +
+      '<div class="fold-foot">' +
+        '<a href="' + SITE.repo.url + '/blob/' + SITE.repo.branch + '/ppt/' + c.ppt + '" target="_blank" rel="noopener">课件 PDF</a>' +
+      '</div>' +
+    '</details>';
+  }).join('');
+
+  /* ---- 课本内容：三条可展开的深入示例，统一四段式 ---- */
+  const WRITING = [
+    {
+      tag: '第 4 章 · 归一化',
+      title: 'RMSNorm：少算一个均值，换来两层尺度不变性',
+      lead: '常见讲法止于“更快、更稳”；这里从残差流的非零均值讲起，把定义、两层尺度不变性与梯度一行行推出来。',
+      body:
+        '<p class="writing-what"><b>常见讲法</b>　归一化层这一节，很多教材会这样写：RMSNorm 是 LayerNorm 的简化版，去掉均值中心化、只除以均方根，因此计算更快、训练更稳定。这句话本身没错，但读者读完仍不知道：为什么可以去掉均值？为什么去掉之后反而更稳？“更快”快在哪个算子上？</p>' +
+        '<p><b>问题动机</b>　Transformer 的残差流里，ReLU、GELU 的输出天然非零均值——GELU 在大片负半轴上输出接近 0 而非对称于 0。LayerNorm 强制减去均值，等于把这份固有偏置一并抹掉；而后面那个可学习偏移 $\\vbeta$ 是逐维独立的一个标量，未必能把被抹掉的结构按维度重建回来。于是问题变成：如果均值本来就携带信息，为什么要减它？</p>' +
+        '<p><b>定义出发</b>　RMSNorm 干脆不求均值、也不要 $\\vbeta$，只除以均方根，再做一次逐维缩放：' +
+          '$$\\tilde{\\vx}=\\frac{\\vx}{\\text{RMS}(\\vx)}\\odot\\vgamma,\\qquad \\text{RMS}(\\vx)=\\sqrt{\\frac{1}{n}\\sum_{i=1}^{n}x_i^{2}}$$' +
+          '定义里只剩两个动作：算平方均值开根号，除，再乘。输出满足 $\\text{RMS}\\approx 1$。</p>' +
+        '<p><b>算法推导（前向）</b>　把输入放大 $\\alpha$ 倍代入定义：均方根同步放大 $\\alpha$ 倍，分子分母相消，于是 $f(\\alpha\\vx)=f(\\vx)$。前接无偏置线性层时，权重缩放 $\\alpha$ 倍同样被约掉——输入与权重两层尺度不变性由此成立。这是“去掉均值”的直接代价与收益：失去了重中心化，换来了对整体尺度的免疫。' +
+          '这正是书里把“为什么要它”推成可验算式子的地方，而不是停在定性描述。</p>' +
+        '<p><b>算法推导（梯度）</b>　对定义式求导，得到的是一个缩放项减去一个平方修正项——比 LayerNorm 少了“减去均值”对应的那一项：' +
+          '$$\\frac{\\partial\\tilde{\\vx}}{\\partial\\vx}=\\vgamma\\left(\\frac{1}{\\text{RMS}(\\vx)}-\\frac{\\vx^{2}}{n\\,\\text{RMS}(\\vx)^{3}}\\right)$$' +
+          '输入放大 $\\alpha$ 倍时梯度整体乘 $1/\\alpha$，传回前接线性层时与权重的 $\\alpha$ 相消，参数梯度回到原值。梯度里少一项，正是前向少一次减均值的镜像。</p>' +
+        '<p><b>实现技巧</b>　工程上可直接用 <code>x * torch.rsqrt(x.pow(2).mean(-1, keepdim=True) + eps)</code> 一行算完，再把 $\\vgamma$ 乘上。相比 LayerNorm 省掉一次均值归约与一次减法，在 GPU 上体现为更少的 kernel 与更短的依赖链——“快 10%–30%”是这么来的，不是玄学。</p>' +
+        '<p><b>实测</b>　原论文在翻译、分类、语言建模三项上对比：多数任务与 LayerNorm 持平或略优，WMT14 英德翻译 BLEU 提升 0.3。</p>' +
+        '<div class="writing-figs">' +
+          '<figure class="writing-fig" data-full="src/assets/img/slides/ch04-p022.svg" data-cap="课件 4.2.3 节“缩放对输出的影响”，图 4.2(a)(b)" role="button" tabindex="0"><img src="src/assets/img/slides/ch04-p022.svg" alt="课件中缩放对输出的影响" loading="lazy"><figcaption>课件 4.2.3 节“缩放对输出的影响”，图 4.2(a)(b)</figcaption></figure>' +
+          '<figure class="writing-fig" data-full="src/assets/img/slides/ch04-p025.svg" data-cap="课件 4.2.3 节“梯度分析：输入梯度的推导”，式 (4-16) 至 (4-20)" role="button" tabindex="0"><img src="src/assets/img/slides/ch04-p025.svg" alt="课件中 RMSNorm 输入梯度的推导" loading="lazy"><figcaption>课件 4.2.3 节“梯度分析：输入梯度的推导”，式 (4-16) 至 (4-20)</figcaption></figure>' +
+        '</div>',
+    },
+    {
+      tag: '第 10 章 · 推理系统',
+      title: 'FlashAttention：把瓶颈从算力挪到访存，然后逐行给出算法',
+      lead: '常见讲法只说“分块省显存、速度快 2–3 倍”；这里先量出瓶颈在 HBM 搬运，再推出在线 softmax 的合并式，最后落到 GEMM 峰值利用率。',
+      body:
+        '<p class="writing-what"><b>常见讲法</b>　不少材料把 FlashAttention 讲成“一种分块计算注意力、减少显存占用的技巧，比标准实现快 2–3 倍”。可是分块本身并不新鲜，常见分块实现也省显存，却不一定快。只说“省显存”无法解释那 2–3 倍从哪来，也无法解释为什么 V1 只跑到理论峰值的 25%–40%。</p>' +
+        '<p><b>问题动机</b>　标准注意力要把分数矩阵 $\\matQ\\matK^{\\top}$ 整块写回 HBM，读写量随序列长度平方增长。GPU 的 SRAM 只有几百 KB、带宽高；HBM 有几十 GB、带宽低一个数量级。当算力早已过剩，真正的墙是搬运——所以要先把瓶颈从 FLOPs 挪到字节数，问题才立得住。</p>' +
+        '<p><b>定义出发</b>　目标是：不把 $n\\times n$ 的分数矩阵整体落地，就得到 $\\text{softmax}(\\matQ\\matK^{\\top}/\\sqrt{d})\\matV$。障碍在 softmax 的归一化要全局量——先得知道整行最大值与指数和，而分块时只能看到一块。</p>' +
+        '<p><b>算法推导</b>　Safe-Softmax 要先拿到全局最大值和全局指数和，没法直接分块。Online Softmax 改成边遍历边修正：旧输出按指数差与新旧长度之比缩放回来，再叠加本块贡献，省掉一次预扫：' +
+          '$$\\tilde{\\matO}_i=\\matO_i^{(1)}e^{M_1-\\tilde{M}}\\frac{L_1}{\\tilde{L}}+\\matO_i^{(2)}$$' +
+          '这一式是整章的关键：它说明“分块”与“精确”并不矛盾，只要允许用已合并的部分结果去修正新块。</p>' +
+        '<p><b>实现技巧</b>　算法 16 是批量 Online-Softmax，17 是一次循环的注意力，18 是批量前向，19 是反向，20 与 21 是 V2 的前向与反向——五个算法各自给出分块、加载、片上计算与写回的全过程。反向不保存中间量，按块重算，用多出来的算力换掉 HBM 往返。V2 进一步改掉线程块与线程束的任务划分，把 GEMM 峰值利用率从 25%–40% 提到 50%–73%，这才是第二次提速的来源。</p>' +
+        '<p><b>实测</b>　GPT-2、1024 长度预训练上比 Hugging Face 框架快约 2–3 倍。</p>' +
+        '<div class="writing-figs">' +
+          '<figure class="writing-fig" data-full="src/assets/img/slides/ch10-p045.svg" data-cap="课件 10.2.2 节“SRAM 与 HBM 的数据流向”，图 10.11" role="button" tabindex="0"><img src="src/assets/img/slides/ch10-p045.svg" alt="课件中 SRAM 与 HBM 的数据流向" loading="lazy"><figcaption>课件 10.2.2 节“SRAM 与 HBM 的数据流向”，图 10.11</figcaption></figure>' +
+          '<figure class="writing-fig" data-full="src/assets/img/slides/ch10-p041.svg" data-cap="课件 10.2.2 节“块输出的合并”，式 (10-59) 至 (10-64)" role="button" tabindex="0"><img src="src/assets/img/slides/ch10-p041.svg" alt="课件中块输出的合并推导" loading="lazy"><figcaption>课件 10.2.2 节“块输出的合并”，式 (10-59) 至 (10-64)</figcaption></figure>' +
+        '</div>',
+    },
+    {
+      tag: '第 8 章 · 对齐',
+      title: 'GRPO：去掉价值模型之后，优势从同一道题的几个答案里来',
+      lead: '常见讲法只说“GRPO 去掉了价值模型、显存更省”；这里说明优势的替代来源、截断目标的改动，以及为此付出的代价。',
+      body:
+        '<p class="writing-what"><b>常见讲法</b>　GRPO 常被一句话带过：它是 PPO 的省显存版本，把价值模型去掉，用组内奖励标准化代替；DeepSeek 用它训出了 R1。这句话给出了结论，却没给出推理链——没有价值模型，优势凭什么还能估？代价又是什么？</p>' +
+        '<p><b>问题动机</b>　PPO 要一个与策略同规模的价值模型来估 $V(s)$，显存翻倍、训练多一份不稳定。而对推理类任务，奖励是规则给的、只在序列末尾出现一次：一条回答拿 0 或 1。既然如此，价值模型的中间估计价值有限，能不能直接从“同一道题的几个答案之间的相对好坏”里读出优势？</p>' +
+        '<p><b>定义出发</b>　对每个问题采样 $G$ 个回答，用规则奖励 $R(o)$ 打分，再按组内均值与标准差标准化得到优势 $\\hat{A}_i$；一条回答的所有词元共享同一个值。优势的定义从“回报减基线”换成了“本回答比同组平均好多少”，基线由组内均值充当。</p>' +
+        '<p><b>算法推导</b>　优化目标沿用 PPO 的截断写法：比率 $\\rho_i$ 夹在 $1-\\epsilon$ 与 $1+\\epsilon$ 之间取最小值，再减去 $\\beta$ 倍的 KL 惩罚：' +
+          '$$\\mathcal{L}_{\\text{GRPO}}(\\theta)=\\mathbb{E}\\left[\\frac{1}{G}\\sum_{i=1}^{G}\\left(\\min\\left(\\rho_i\\hat{A}_i,\\ \\text{clip}(\\rho_i,1-\\epsilon,1+\\epsilon)\\hat{A}_i\\right)-\\beta D_{\\text{KL}}\\right)\\right]$$' +
+          '与 PPO 的差别只在两处——比率是回答级而非词元级，且 KL 改用方差更小、仍保持无偏的 K3 估计量。截断的作用仍是限制单次更新幅度，这一点原封不动。</p>' +
+        '<p><b>实现技巧</b>　算法 15 分三层循环：外层把当前策略复制成参考模型，中层采样问题、生成回答、算奖励与优势，内层在固定样本上反复最大化目标，取 $\\mu=1$ 即可简化训练。组内标准化要加一个很小的 $\\epsilon$，否则同组全对或全错时会除零——这类数值细节书里单独交代。</p>' +
+        '<p><b>代价</b>　没有价值模型，就无法对长期价值建模，过程层面只能评估单步对最终结果的影响。书里也如实写了这一点：省下的显存与稳定性，是用“失去细粒度信用分配”换来的。</p>' +
+        '<div class="writing-figs">' +
+          '<figure class="writing-fig" data-full="src/assets/img/slides/ch08-p086.svg" data-cap="课件 8.5.2 节“GRPO 算法”，图 8.17" role="button" tabindex="0"><img src="src/assets/img/slides/ch08-p086.svg" alt="课件中 GRPO 算法流程图" loading="lazy"><figcaption>课件 8.5.2 节“GRPO 算法”，图 8.17</figcaption></figure>' +
+          '<figure class="writing-fig" data-full="src/assets/img/slides/ch08-p088.svg" data-cap="课件 8.5.2 节“GRPO 的优化目标”，页面上正是式 (8-35) 与 K3 估计量" role="button" tabindex="0"><img src="src/assets/img/slides/ch08-p088.svg" alt="课件中 GRPO 的优化目标" loading="lazy"><figcaption>课件 8.5.2 节“GRPO 的优化目标”，页面上正是式 (8-35) 与 K3 估计量</figcaption></figure>' +
+        '</div>',
+    },
+  ];
+  document.getElementById('home-writing').innerHTML = WRITING.map(function (w, i) {
+    return '<details class="writing-item"' + (i === 0 ? ' open' : '') + '>' +
+      '<summary>' +
+        '<span class="writing-tag">' + w.tag + '</span>' +
+        '<h3>' + w.title + '</h3>' +
+        '<p class="writing-lead">' + w.lead + '</p>' +
+      '</summary>' +
+      '<div class="writing-body">' + w.body + '</div>' +
+    '</details>';
+  }).join('');
+
+  /* ---- 代码仓库：2×2，左边输出、右边画面 ---- */
+  const CODE_CASES = [
+    {
+      title: '缩放点积注意力',
+      file: 'src/transformer/scaled_dot_product_attention.py',
+      cmd: 'python src/transformer/scaled_dot_product_attention.py',
+      out: 'Q 形状: (4, 8, 16, 64)\n输出形状: (4, 8, 16, 64)',
+      note: '4 批 × 8 头 × 16 词 × 64 维，输出与输入同形。注意力不改形状，只重排信息。',
+      kind: 'text',
+    },
+    {
+      title: 'RMSNorm 的缩放效应',
+      file: 'src/llama/rmsnorm.py',
+      cmd: 'python src/llama/rmsnorm.py',
+      out: '输入形状: (100, 3)\n原始数据均值: [ 0.5235  0.4546  0.1045]\nLayerNorm 均值: [ 0.2888  0.1907 -0.4795]\nRMSNorm 均值:   [ 0.9290  0.8493  0.1021]',
+      note: 'RMSNorm 不重中心化，均值保留原方向；LayerNorm 把均值压向 0。',
+      kind: 'text',
+    },
+    {
+      title: '网格世界的策略迭代',
+      file: 'src/rl/run_all.py',
+      cmd: 'python src/rl/run_all.py',
+      out: '[deterministic] V(start) = 4.580\n  Q-learning      ok   V=4.580\n  SARSA           ok   V=4.580\n  expected SARSA  ok   V=4.580\n  MC control      ok   V=4.580',
+      note: '三种时序差分控制与蒙特卡洛控制，均与动态规划精确解一致。',
+      kind: 'grid',
+    },
+    {
+      title: 'PPO 跑 CartPole',
+      file: 'src/rl/ppo.py',
+      cmd: 'python src/rl/ppo.py',
+      out: 'step 7500: greedy policy average return 276\nstep 15000: greedy policy average return 483\nstep 30000: greedy policy average return 500\nend of training (60000 steps): average return 500 (max 500)',
+      note: '500 帧 · PPO 训练 61k 步 · 测试回报 500。随着训练轮次增加，其 model-free 的控制越来越稳定。',
+      kind: 'cartpole',
+    },
+  ];
+
+  /* grid_world 的四个时刻，按 run_all.py 的确定性场景录下（整局四步：A 从左上走到终点）。
+     每个时刻单独排版成一张 3×3 表格，四张两两并排——比一段 ASCII 更容易看出
+     「A 逐格移动、格子本身不变」。直接内联而不 fetch：双击走的是 file:// 协议，
+     fetch 本地文件会被拦。 */
+  const GRID_STEPS = [
+    { t: 0, cells: ['A', '.', 'X', '.', '.', '.', '.', '.', 'G'] },
+    { t: 1, cells: ['S', '.', 'X', 'A', '.', '.', '.', '.', 'G'] },
+    { t: 2, cells: ['S', '.', 'X', '.', '.', '.', 'A', '.', 'G'] },
+    { t: 3, cells: ['S', '.', 'X', '.', '.', '.', '.', 'A', 'G'] },
+  ];
+
+  /* 每格的语义：S 起点 / X 陷阱 / G 终点 / A 当前站位 / . 空地。
+     配色取 :root 变量：绿色表示终点、珊瑚色表示陷阱，与全站一致。 */
+  const CELL_LABEL = {
+    S: ['start', '起点'],
+    X: ['bomb', '陷阱'],
+    G: ['goal', '终点'],
+    A: ['agent', '当前站位'],
+    '.': ['empty', '空地'],
+  };
+
+  function gridTable(step) {
+    let rows = '';
+    for (let r = 0; r < 3; r++) {
+      let cells = '<th class="gwt-row" scope="row">' + (r + 1) + '</th>';
+      for (let c = 0; c < 3; c++) {
+        const ch = step.cells[r * 3 + c];
+        const info = CELL_LABEL[ch] || CELL_LABEL['.'];
+        cells += '<td class="gwt-cell" data-kind="' + info[0] + '" ' +
+          'aria-label="第 ' + (r + 1) + ' 行第 ' + (c + 1) + ' 列：' + info[1] + '">' +
+          (ch === '.' ? '' : ch) + '</td>';
+      }
+      rows += '<tr>' + cells + '</tr>';
+    }
+    return '<figure class="gwt">' +
+      '<figcaption class="gwt-cap">t = ' + step.t + '</figcaption>' +
+      '<table class="gwt-grid">' +
+        '<caption class="gwt-sr">t = ' + step.t + ' 时刻的 3×3 网格世界</caption>' +
+        '<tbody>' + rows + '</tbody>' +
+      '</table>' +
+    '</figure>';
+  }
+
+  function gridWall() {
+    return '<div class="gwt-wall">' + GRID_STEPS.map(gridTable).join('') + '</div>';
+  }
+
+  function codeCard(c) {
+    const visual =
+      c.kind === 'cartpole'
+        ? '<div id="cartpole-demo"></div>'
+        : c.kind === 'grid'
+        ? gridWall()
+        : '';
+    return '<div class="card code-case">' +
+      '<div class="code-case-head"><h3>' + c.title + '</h3><code class="code-file">' + c.file + '</code></div>' +
+      '<pre class="code-out">' + c.out.replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</pre>' +
+      (visual || '') +
+      '<p>' + c.note + '</p>' +
+    '</div>';
+  }
+  document.getElementById('home-code').innerHTML = CODE_CASES.map(codeCard).join('');
+
+  /* ---- 课件墙：改由 src/assets/js/slides-panel.js 接管（图片预览 / PDF 浏览 两个 tab） ---- */
+
+  /* ---- 书页样张：六页，与 main_v2.md 的 内容1-6 一致 ---- */
+  const SAMPLES = [
+    { src: 'src/assets/img/sample-1.png', cap: '书页样张 1' },
+    { src: 'src/assets/img/sample-2.png', cap: '书页样张 2' },
+    { src: 'src/assets/img/sample-3.png', cap: '书页样张 3' },
+    { src: 'src/assets/img/sample-4.png', cap: '书页样张 4' },
+    { src: 'src/assets/img/sample-5.png', cap: '书页样张 5' },
+    { src: 'src/assets/img/sample-6.png', cap: '书页样张 6' },
+  ];
+  document.getElementById('home-samples').innerHTML = SAMPLES.map(function (s, i) {
+    return '<button class="sample-shot" data-full="' + s.src + '" data-cap="' + s.cap + '">' +
+      '<img src="' + s.src + '" alt="' + s.cap + '" loading="lazy">' +
+    '</button>';
+  }).join('');
+
+  /* ---- 写法里的公式：KaTeX 只在主页用到这几条排版，不必整套 markdown ---- */
+  /* ---- 写法正文里的公式：$...$ 与 $$...$$ 交给 KaTeX 统排 ---- */
+  (function typesetFormulas() {
+    if (!document.querySelector('.writing-body').textContent.includes('$')) return;
+
+    const V = 'src/assets/vendor/';
+    const css = document.createElement('link');
+    css.rel = 'stylesheet';
+    css.href = V + 'katex/katex.min.css';
+    document.head.appendChild(css);
+
+    function script(src) {
+      return new Promise(function (ok, no) {
+        const s = document.createElement('script');
+        s.src = src;
+        s.async = false;
+        s.onload = ok;
+        s.onerror = no;
+        document.head.appendChild(s);
+      });
+    }
+
+    /* 串行：katex 必须先于 auto-render 与宏表就位 */
+    script(V + 'katex/katex.min.js')
+      .then(function () { return script('src/assets/js/math-macros.js'); })
+      .then(function () { return script(V + 'katex/auto-render.min.js'); })
+      .then(function () {
+        if (!window.renderMathInElement) return;
+        document.querySelectorAll('.writing-body').forEach(function (el) {
+          window.renderMathInElement(el, {
+            delimiters: [
+              { left: '$$', right: '$$', display: true },
+              { left: '$', right: '$', display: false },
+            ],
+            macros: window.MATH_MACROS || {},
+            throwOnError: false,
+            errorColor: '#d2573a',
+            ignoredTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+          });
+        });
+      })
+      .catch(function () {
+        /* 公式加载失败就留下 TeX 源码，不让整页卡住 */
+      });
+  })();
+
+  /* ---- 图片放大 ---- */
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  const lbCap = document.getElementById('lightbox-cap');
+
+  function openLightbox(src, cap) {
+    lbImg.src = src;
+    lbImg.alt = cap || '';
+    lbCap.textContent = cap || '';
+    lb.hidden = false;
+    document.body.classList.add('is-locked');
+    lb.querySelector('.lightbox-close').focus();
+  }
+  function closeLightbox() {
+    lb.hidden = true;
+    lbImg.src = '';
+    document.body.classList.remove('is-locked');
+  }
+
+  document.addEventListener('click', function (e) {
+    /* 放大层开着时，点画面任意位置都关闭 —— 包括图片本身与说明文字，
+       不再只认「图片外」和右上角那个 ×。放大层是一整块固定遮罩，
+       它铺开的时候下面没有任何可点的东西，所以"点哪都关"不会误关别处。 */
+    if (!lb.hidden) {
+      closeLightbox();
+      return;
+    }
+    const shot = e.target.closest('.sample-shot');
+    if (shot) {
+      openLightbox(shot.dataset.full, shot.dataset.cap);
+      return;
+    }
+    const tile = e.target.closest('.sp-tile, .writing-fig');
+    if (tile) {
+      openLightbox(tile.dataset.full, tile.dataset.cap);
+    }
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !lb.hidden) closeLightbox();
+    if ((e.key === 'Enter' || e.key === ' ') && document.activeElement.matches('.sp-tile, .writing-fig')) {
+      e.preventDefault();
+      const t = document.activeElement;
+      openLightbox(t.dataset.full, t.dataset.cap);
+    }
+  });
+
+  /* ---- 标题打字机：页面上每个大标题（首屏 h1 与各节 h2）进视口时逐字打出，
+     末尾落一个 <eos> 再一起淡出，模拟一次 next-token 生成。
+     每个标题各自独立：滚到哪个打哪个，来回滚动不重播；
+     右下角的上箭头回顶时把全部标题重放一遍。 ---- */
+  let replayTyper = function () {};
+  (function typewriter() {
+    /* 减少动效时不拆 DOM：标题保持原样，一点不动比打一半停在半句更稳妥 */
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    /* 只挑各节的 h2。首屏 banner 的 h1 要一直整句立在那里，
+       不能被逐字打出来——它是读者落地后看到的第一行，不能有半截空窗。 */
+    const replayTypers = [];
+    const headings = Array.prototype.slice.call(
+      document.querySelectorAll('.section-head h2')
+    );
+
+    /* 把标题的原始子节点拆成「原子」：文字按字拆，元素（<br>、<a>）整体算一个。
+       这样标题里带链接时，打到那里就把整个 <a> 放回去，链接不会被拆散。 */
+    function atomsOf(el) {
+      const list = [];
+      Array.prototype.forEach.call(el.childNodes, function (n) {
+        if (n.nodeType === 3) {
+          /* [...s] 按码点拆：中文与 emoji 都不会被切成半个字符 */
+          [...n.textContent].forEach(function (c) { list.push({ ch: c }); });
+        } else if (n.nodeType === 1) {
+          list.push({ node: n.cloneNode(true) });
+        }
+      });
+      return list;
+    }
+
+    function make(el) {
+      const atoms = atomsOf(el);
+      if (!atoms.length) return null;
+
+      /* 原始文案给读屏：打字过程中内容是一截截长的，读屏不该读到半句 */
+      el.setAttribute('aria-label', el.textContent.trim());
+
+      let timer = null;
+      let played = false;
+      /* 每次播放自增：重播时上一轮的收尾定时器还在排队，
+         它们只能改自己那一轮抓到的那份 parts，不许动新的一轮。 */
+      let gen = 0;
+
+      /* 每次播放都重建外壳：文字层 + nowrap 的「<eos> + 光标」尾巴。
+         光标必须和 <eos> 待在同一个 nowrap 组里，标题折行时才不会被挤到下一行。 */
+      function build() {
+        el.textContent = '';
+        const textEl = document.createElement('span');
+        textEl.className = 'tw-text';
+        const tail = document.createElement('span');
+        tail.className = 'tw-tail';
+        const caret = document.createElement('span');
+        caret.className = 'tw-caret';
+        caret.setAttribute('aria-hidden', 'true');
+        tail.appendChild(caret);
+        el.appendChild(textEl);
+        el.appendChild(tail);
+        return { textEl: textEl, caret: caret, tail: tail };
+      }
+
+      function showEos(p, myGen) {
+        /* 收尾：光标停跳后一起淡出。没有结束符要等，所以不用再插 <eos>，
+           打完最后一个字，光标在右下方闪一下、再收掉即可。
+           （<eos> 那段实现留在下面的注释里，需要恢复时把 EOS 打开即可。） */
+        window.setTimeout(function () {
+          if (myGen !== gen) return;
+          p.caret.classList.add('is-done', 'is-out');
+        }, 700);
+        window.setTimeout(function () {
+          if (myGen !== gen) return;
+          p.caret.classList.remove('is-done', 'is-out');
+          p.caret.classList.add('is-gone');
+        }, 1400);
+      }
+
+      /* 结束符 <eos>：暂不启用。
+         原先打完最后一个字会落一个 <eos> 徽标、光标排到它右侧再一起淡出；
+         现在整段跳过，标题打完只留光标收尾，画面更安静。
+         要恢复：把下面这段插回 showEos() 的开头，并把两处 timeout 的
+         数值改回 900 / 1600。
+
+         const eos = document.createElement('span');
+         eos.className = 'tw-eos';
+         eos.textContent = '<eos>';
+         eos.setAttribute('aria-hidden', 'true');
+         p.tail.insertBefore(eos, p.caret); */
+
+      function play(force) {
+        if (played && !force) return;
+        played = true;
+        window.clearTimeout(timer);
+        const p = build();
+        const myGen = ++gen;
+
+        /* 字间隔带一点抖动，读起来像模型在逐个吐 token。
+           总时长封顶 3.2 秒：标题从十几个字到四十几个字都有，
+           按固定间隔打，长标题会拖到五六秒，读者早滚过去了。 */
+        const tick = Math.max(16, Math.min(110, 3200 / Math.max(atoms.length, 1)));
+        let i = 0;
+        const step = function () {
+          if (myGen !== gen) return;
+          if (i >= atoms.length) {
+            timer = window.setTimeout(function () { showEos(p, myGen); }, 260);
+            return;
+          }
+          const a = atoms[i++];
+          if (a.ch) {
+            /* 逐字追加到末尾那个文本节点上；末尾不是文本节点就新开一个。
+               不能用 textContent +=：它会把之前放回去的 <a> 之类整个抹掉。 */
+            const last = p.textEl.lastChild;
+            if (last && last.nodeType === 3) last.appendData(a.ch);
+            else p.textEl.appendChild(document.createTextNode(a.ch));
+          } else {
+            p.textEl.appendChild(a.node.cloneNode(true));
+          }
+          timer = window.setTimeout(step, tick * (0.75 + Math.random() * 0.5));
+        };
+        step();
+      }
+
+      return { play: play };
+    }
+
+    headings.forEach(function (el) {
+      const typer = make(el);
+      if (!typer) return;
+      const entry = { el: el, typer: typer };
+      replayTypers.push(entry);
+
+      if (!('IntersectionObserver' in window)) {
+        typer.play(false);
+        return;
+      }
+      const io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          io.disconnect();
+          typer.play(false);
+        });
+      }, { threshold: 0.3 });
+      io.observe(el);
+    });
+
+    /* 回顶时只重放此刻在屏幕上的标题：远处的标题要是也跟着打一遍，
+       用户在顶部根本看不到，等滚下去时它们早已打完。 */
+    replayTyper = function () {
+      replayTypers.forEach(function (r) {
+        const box = r.el.getBoundingClientRect();
+        if (box.bottom < 0 || box.top > window.innerHeight) return;
+        r.typer.play(true);
+      });
+    };
+  })();
+
+  /* ---- 右下角上箭头：滚过首屏才出现；点击回顶并重放标题打字效果 ---- */
+  (function floatTools() {
+    const tools = document.querySelector('.float-tools');
+    const top = document.getElementById('to-top');
+    if (!tools) return;
+
+    const sync = function () {
+      tools.classList.toggle('is-shown', window.scrollY > 320);
+    };
+    sync();
+    window.addEventListener('scroll', sync, { passive: true });
+
+    if (top) {
+      top.addEventListener('click', function () {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        /* 回顶后重放一次打字机。重放只挑此刻在视口里的标题，
+           所以必须等平滑滚动真正落定再播——固定等 320ms 时页面
+           可能还在往上的半路上，首屏标题压根没进视口，会被整批跳过。
+           做法：监听 scroll，200ms 内没有新的滚动就算停稳。 */
+        let settle = 0;
+        const fire = function () {
+          window.removeEventListener('scroll', bump);
+          replayTyper();
+        };
+        const bump = function () {
+          window.clearTimeout(settle);
+          if (window.scrollY <= 2) {
+            /* 已经在顶：立刻播，不必再等 */
+            settle = window.setTimeout(fire, 60);
+          } else {
+            settle = window.setTimeout(fire, 200);
+          }
+        };
+        window.addEventListener('scroll', bump, { passive: true });
+        bump();
+      });
+    }
+  })();
+
+  /* ---- 购买入口：每家一张码，扫码直达商品页 ---- */
+  const SHOP_COLOR = { 京东: '#e1251b', '淘宝 / 天猫': '#ff6a00', 当当: '#ea423e' };
+  const SHOP_MARK = { 京东: '京', '淘宝 / 天猫': '淘', 当当: '当' };
+  document.getElementById('home-shops').innerHTML = SITE.shops.map(function (s) {
+    const color = SHOP_COLOR[s.name] || 'var(--line-strong)';
+    return '<div class="shop-card" style="--shop:' + color + '">' +
+      '<div class="shop-qr"><img src="' + SITE.url(s.qr) + '" alt="' + s.name + ' 购买二维码" loading="lazy" width="396" height="396"></div>' +
+      '<div class="shop-body">' +
+        '<h3><span class="shop-mark" aria-hidden="true">' + (SHOP_MARK[s.name] || '·') + '</span>' + s.name + '</h3>' +
+        '<p>' + s.note + '</p>' +
+        '<a class="btn btn-sm" href="' + s.url + '" target="_blank" rel="noopener">前往购买</a>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+})();
+</script>
 </body>
 </html>

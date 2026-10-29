@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://token-to-llm.github.io/sitemap.xml

@@ -1,0 +1,282 @@
+/* CartPole 回放播放器。配色全部走 site.css 的 token，与站内按钮、卡片同一套视觉。
+   挂载点：#cartpole-demo 由 assets/js/cartpole-play.js 在运行时填充。 */
+
+.cp {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  min-width: 0;
+}
+
+/* ---------- 两个视图的 tab ---------- */
+
+.cp-tabs {
+  display: flex;
+  gap: 2px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 2px;
+}
+
+.cp-tab {
+  appearance: none;
+  border: 0;
+  background: none;
+  padding: 6px 12px 7px;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ink-3);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.cp-tab:hover {
+  color: var(--ink-2);
+}
+
+.cp-tab.is-active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+.cp-tab:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+}
+
+.cp-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.cp-panel[hidden] {
+  display: none;
+}
+
+/* ---------- 训练记录 ---------- */
+
+/* 训练视图与测试视图共用 .cp-stage 与同一块 SVG，画布尺寸因此逐像素一致。
+   这一层只负责「训练 N 步」这行字：它固定压在画面底部，不占额外高度，
+   两边的画面起止位置完全相同。 */
+.cp-train-stage {
+  position: relative;
+}
+
+.cp-train-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  padding: 6px 10px;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--ink-2);
+  background: linear-gradient(to top, var(--paper-2) 55%, transparent);
+  pointer-events: none;
+}
+
+/* 局与局之间的停顿：轮次标签换成主色，读者能看出「这一轮结束了，换下一轮」。
+   画面本身不变暗 —— 每局的最后一帧正是杆倒下的瞬间，淡掉反而看不到失败。 */
+.cp-train-stage.is-gap .cp-train-round {
+  color: var(--primary);
+}
+
+.cp-train-stage.is-gap .cp-train-caption {
+  background: linear-gradient(to top, var(--tint-primary) 55%, transparent);
+}
+
+/* ---------- 画面 ---------- */
+
+.cp-stage {
+  margin: 0;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--paper-2);
+  overflow: hidden;
+}
+
+.cp-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+}
+
+.cp-track {
+  stroke: var(--line-strong);
+  stroke-width: 2;
+}
+
+.cp-grid line {
+  stroke: var(--line);
+  stroke-width: 1;
+}
+
+.cp-bounds line {
+  stroke: var(--line-strong);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+}
+
+.cp-bounds text {
+  fill: var(--ink-3);
+  font-family: var(--mono);
+  font-size: 11px;
+}
+
+/* 终止角 ±θ_limit：杆摆过这两条线就判失败 */
+.cp-theta-bounds line {
+  stroke: var(--line-strong);
+  stroke-width: 1;
+  stroke-dasharray: 2 5;
+}
+
+.cp-theta-bounds text {
+  fill: var(--ink-3);
+  font-family: var(--mono);
+  font-size: 11px;
+}
+
+/* 杆竖直时的参考线，帮助看出偏转 */
+.cp-plum {
+  stroke: var(--line);
+  stroke-width: 1;
+  stroke-dasharray: 3 5;
+}
+
+.cp-cart-body {
+  fill: var(--primary);
+}
+
+.cp-wheel {
+  fill: var(--paper);
+  stroke: var(--primary);
+  stroke-width: 1.5;
+}
+
+.cp-pole-bar {
+  stroke: var(--accent);
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+
+.cp-pole-hub {
+  fill: var(--ink-2);
+}
+
+/* ---------- 控件 ---------- */
+
+.cp-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.cp-toggle,
+.cp-train-toggle {
+  flex: none;
+  min-width: 62px;
+}
+
+/* 训练视图的进度条与测试视图同宽：两个视图的画布一样大，控件行不该一个塞满、
+   一个只剩浏览器默认的一小截。 */
+.cp-range,
+.cp-train-range {
+  flex: 1 1 140px;
+  min-width: 0;
+  height: 20px;
+  margin: 0;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.cp-speeds {
+  display: flex;
+  gap: 4px;
+  flex: none;
+}
+
+/* 速度按钮沿用 .btn.btn-sm 的高度与字号，选中态用主色描边 */
+.cp-speed {
+  min-width: 44px;
+  padding: 0 8px;
+  font-variant-numeric: tabular-nums;
+}
+
+.cp-speed[aria-pressed='true'] {
+  border-color: var(--primary);
+  background: var(--tint-primary);
+  color: var(--primary-ink);
+}
+
+/* ---------- 读数 ---------- */
+
+.cp-readout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 14px;
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.cp-frame,
+.cp-theta {
+  color: var(--ink);
+}
+
+.cp-meta {
+  color: var(--ink-3);
+}
+
+/* ---------- 数据缺失 ---------- */
+
+.cp-empty {
+  margin: 0;
+  padding: 22px 16px;
+  text-align: center;
+  font-size: 0.86rem;
+  color: var(--ink-3);
+  background: var(--paper-2);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-sm);
+}
+
+/* ---------- 窄屏：控件允许换行，进度条独占一行，不横向溢出 ---------- */
+
+@media (max-width: 560px) {
+  .cp-range,
+  .cp-train-range {
+    order: 3;
+    flex: 1 1 100%;
+  }
+
+  .cp-speeds {
+    margin-left: auto;
+  }
+
+  .cp-speed {
+    min-width: 40px;
+  }
+
+  .cp-train-speed {
+    min-width: 40px;
+  }
+
+  .cp-readout {
+    font-size: 0.72rem;
+  }
+}

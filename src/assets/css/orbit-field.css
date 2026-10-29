@@ -1,0 +1,149 @@
+/* ==========================================================================
+   orbit-field.css —— 配套 assets/js/orbit-field.js
+   --------------------------------------------------------------------------
+   组件本身不认识任何品牌色：只读下面这几个自定义属性，调用方在外面设一次即可。
+
+     --of-line          轨道主色           默认 currentColor
+     --of-line-ink      内圈（近端）色     默认 var(--of-line)
+     --of-accent        卫星/拖尾强调色    默认 currentColor
+     --of-far-op        远端轨道透明度     默认 .22
+     --of-near-op       近端轨道透明度     默认 .40
+
+   三条硬规则（与脚本一一对应，不要单独改其中一边）：
+   ① 所有椭圆共用脚本里的 tilt 与 squash —— 同心、同斜度。
+   ② 卫星的圆点经四层变换抵消，永远是正圆，且圆心落在椭圆上。
+   ③ 只在 transform / stroke-dashoffset 上做动画，不触发重排。
+   ========================================================================== */
+
+.of-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  color: var(--of-line, currentColor);
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ---------- 1. 轨道 -------------------------------------------------------- */
+.of-rings {
+  color: var(--of-line, currentColor);
+}
+
+.of-ring {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+}
+
+/* 远端：更细、更淡，读作“盘面后侧” */
+.of-ring--far {
+  stroke: var(--of-line, currentColor);
+  stroke-opacity: var(--of-far-op, 0.22);
+}
+
+/* 近端：稍实一点，但依旧克制 —— 整体压在半透明，避免和书封面抢 */
+.of-ring--near {
+  stroke: var(--of-line-ink, var(--of-line, currentColor));
+  stroke-opacity: var(--of-near-op, 0.4);
+}
+
+/* ---------- 2. 卫星 -------------------------------------------------------- */
+.of-squash {
+  /* 压扁层只承载静态变换，不参与动画 */
+  transform-box: view-box;
+}
+
+.of-orbit {
+  color: var(--of-line, currentColor);
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+  transform: rotate(var(--of-phase, 0deg));
+  animation: of-spin var(--of-dur, 30s) linear infinite;
+  animation-delay: var(--of-del, 0s);
+  will-change: transform;
+}
+
+/* 反向自转：与 .of-orbit 同时长、同延迟、同方向，角度严格相消 */
+.of-cancel {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: of-spin-cancel var(--of-dur, 30s) linear infinite;
+  animation-delay: var(--of-del, 0s);
+  will-change: transform;
+}
+
+.of-sat--accent {
+  color: var(--of-accent, currentColor);
+}
+
+.of-sat--ink {
+  color: var(--of-line-ink, var(--of-line, currentColor));
+}
+
+.of-sat__dot {
+  fill: currentColor;
+}
+
+/* 点外一圈极淡的光，像卫星拖着的尾迹核心 */
+.of-sat__halo {
+  fill: currentColor;
+  opacity: 0.18;
+}
+
+/* ---------- 3. 拖尾 --------------------------------------------------------
+   两段弧：近处 120° 左右、远处再拖长一截。pathLength 归一成 1000，
+   所以 dasharray 的比例在任何半径上都一样，不需要按尺寸改数字。 */
+.of-trail {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  /* 拖尾线宽随轨道半径走会让外圈太粗，这里固定成 1.1 个用户单位 */
+  stroke-width: 1.1;
+  vector-effect: non-scaling-stroke;
+}
+
+.of-trail--near {
+  stroke-opacity: 0.34;
+}
+
+.of-trail--far {
+  stroke-opacity: 0.12;
+}
+
+/* ---------- 4. 动画 -------------------------------------------------------- */
+@keyframes of-spin {
+  from {
+    transform: rotate(var(--of-phase, 0deg));
+  }
+  to {
+    transform: rotate(calc(var(--of-phase, 0deg) + var(--of-sweep, 360deg)));
+  }
+}
+
+@keyframes of-spin-cancel {
+  from {
+    transform: rotate(calc(var(--of-phase, 0deg) * -1));
+  }
+  to {
+    transform: rotate(calc((var(--of-phase, 0deg) + var(--of-sweep, 360deg)) * -1));
+  }
+}
+
+/* ---------- 5. 降级 -------------------------------------------------------- */
+/* 5.1 暂停：宿主加 data-of-anim="off" 即冻结（保留静态相位，画面不塌） */
+[data-of-anim="off"] .of-orbit,
+[data-of-anim="off"] .of-cancel {
+  animation: none !important;
+  will-change: auto !important;
+}
+
+/* 5.2 减少动态：卫星停在各自 --of-phase 指定的那一格 */
+@media (prefers-reduced-motion: reduce) {
+  .of-orbit,
+  .of-cancel {
+    animation: none !important;
+    will-change: auto !important;
+  }
+}

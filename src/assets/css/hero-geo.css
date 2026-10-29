@@ -1,0 +1,492 @@
+/* ==========================================================================
+   hero-geo.css —— 首屏 hero 的几何背景与运动层
+   --------------------------------------------------------------------------
+   配套脚本：assets/js/hero-geo.js（自挂载，找不到 .hero 时静默退出）
+   配色一律取自 assets/css/site.css 的 :root 变量，不新增色值。
+   本文件不改变 .hero 的 padding / max-width / grid，只做“垫底的装饰”。
+   ========================================================================== */
+
+/* ---------- 0. 层叠关系 ----------------------------------------------------
+   .hero（site.css 里已有 position:relative; overflow:hidden）
+     └─ .hero-geo              z-index: 0  ← 全幅底纹：网格 / 光带 / 星点
+     └─ .hero-grid             z-index: 1  ← 抬到装饰层之上（原为静态流）
+          └─ .hero-art
+               ├─ .hero-geo-book  z-index: 0  ← 书背后的轨道环 / 色板 / 光晕
+               └─ img             z-index: 1  ← 书本身永远在最上
+   仅补 position/z-index，不改任何尺寸与盒模型。
+   -------------------------------------------------------------------------- */
+.hero-grid {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-art img {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- 1. 全幅装饰底板 ------------------------------------------------ */
+.hero-geo {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  /* 静态属性再由脚本内联写一份，避免 CSS 未到时占位抖动 */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.hero-geo__layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* 1.1 网格：72px 主格 + 24px 细格，用径向遮罩让左栏文字区保持干净 */
+.hero-geo__grid {
+  background-image:
+    linear-gradient(to right, var(--line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+  background-size: 72px 72px;
+  opacity: 0.55;
+  -webkit-mask-image: radial-gradient(118% 92% at 78% 48%, #000 0 26%, transparent 74%);
+  mask-image: radial-gradient(118% 92% at 78% 48%, #000 0 26%, transparent 74%);
+}
+
+.hero-geo__grid::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, var(--line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+  background-size: 24px 24px;
+  opacity: 0.45;
+}
+
+/* 1.2 斜向光带：一道很淡的靛蓝锥形光，从右上扫向书的区域 */
+.hero-geo__band {
+  inset: -34% -14% -34% 38%;
+  background: linear-gradient(104deg,
+      transparent 34%,
+      var(--tint-primary) 47%,
+      var(--tint-primary) 53%,
+      transparent 66%);
+  opacity: 0.85;
+  transform: rotate(-1.5deg);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0 4%, #000 26%, #000 74%, transparent 96%);
+  mask-image: linear-gradient(180deg, transparent 0 4%, #000 26%, #000 74%, transparent 96%);
+}
+
+/* 1.3 右侧大光晕：唯一的“会呼吸”大面积元素，漂移幅度很小 */
+.hero-geo__glow {
+  inset: -18% -12% -18% 30%;
+  background:
+    radial-gradient(46% 42% at 66% 50%, var(--tint-primary-strong) 0%, transparent 68%),
+    radial-gradient(30% 30% at 82% 34%, var(--tint-accent) 0%, transparent 72%);
+  opacity: 0.5;
+  will-change: transform, opacity;
+  animation: hg-drift 16s ease-in-out infinite alternate;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0 22%, #000 46%);
+  mask-image: linear-gradient(90deg, transparent 0 22%, #000 46%);
+}
+
+/* 1.4 底部刻度尺：技术图纸的“坐标感”，两端淡出 */
+.hero-geo__ticks {
+  inset: auto 0 24px 0;
+  height: 13px;
+  background-image:
+    repeating-linear-gradient(to right, var(--line-strong) 0 1px, transparent 1px 14px);
+  opacity: 0.8;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0 30%, #000 56%, #000 86%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0 30%, #000 56%, #000 86%, transparent 100%);
+}
+
+.hero-geo__ticks::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--line-strong);
+}
+
+/* 1.5 星点 / 四角闪光（与封面上的白色 sparkle 同构） */
+.hero-geo__stars {
+  inset: 0;
+}
+
+.hero-geo__star {
+  position: absolute;
+  display: block;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--primary);
+  opacity: var(--hg-o, 0.5);
+  animation: hg-twinkle 9s ease-in-out infinite;
+}
+
+.hero-geo__star--accent {
+  background: var(--accent);
+}
+
+/* 四角闪光：两条细十字，旋转 45° 后即为“✦” */
+.hero-geo__star--spark {
+  width: 13px;
+  height: 13px;
+  border-radius: 0;
+  background: none;
+}
+
+.hero-geo__star--spark::before,
+.hero-geo__star--spark::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  background: currentColor;
+  transform: translate(-50%, -50%);
+}
+
+.hero-geo__star--spark::before {
+  width: 1px;
+  height: 100%;
+}
+
+.hero-geo__star--spark::after {
+  width: 100%;
+  height: 1px;
+}
+
+.hero-geo__star--spark {
+  color: var(--primary);
+}
+
+.hero-geo__star--spark.hero-geo__star--accent {
+  color: var(--accent);
+}
+
+/* ---------- 2. 书背后的承托层 ---------------------------------------------- */
+.hero-geo-book {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.hero-geo-book__stage {
+  position: relative;
+  width: min(470px, 124%);
+  aspect-ratio: 1 / 1;
+  flex: none;
+}
+
+/* 2.1 光晕：书脚下的一团柔光，9s 一次呼吸 */
+.hero-geo-book__halo {
+  position: absolute;
+  inset: -14% -10%;
+  background: radial-gradient(48% 44% at 52% 56%,
+      var(--tint-primary-strong) 0%,
+      transparent 72%);
+  opacity: 0.6;
+  will-change: transform, opacity;
+  animation: hg-breathe 9s ease-in-out infinite alternate;
+}
+
+/* 2.2 色板：一块偏出书外的靛蓝平面，让书“压”在实物上而不是悬空 */
+.hero-geo-book__slab {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(348px, 80%);
+  aspect-ratio: 2 / 3;
+  background: var(--tint-primary);
+  border: 1px solid var(--tint-primary-strong);
+  border-radius: 3px;
+  transform: translate(-50%, -50%) rotate(-4deg) translate(22px, 16px);
+  opacity: 0.95;
+}
+
+/* 2.3 第二块更淡的平面，叠出色阶层次 */
+.hero-geo-book__plane {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(318px, 74%);
+  aspect-ratio: 2 / 3;
+  background: linear-gradient(160deg, var(--tint-primary) 0%, transparent 62%);
+  border: 1px solid var(--tint-primary-strong);
+  border-radius: 3px;
+  transform: translate(-50%, -50%) rotate(5deg) translate(-30px, -14px);
+  opacity: 0.7;
+}
+
+/* 2.4 轨道环：由 OrbitField 组件绘制（assets/js/orbit-field.js），
+   这里只负责尺寸与配色变量。轨道线刻意压淡（远 .16 / 近 .26），
+   让书和卫星成为视觉主角；超出书身的部分由 .hero 的 overflow:hidden 收掉。 */
+.hero-geo-book__rings {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(700px, 200%);
+  aspect-ratio: 1 / 1;
+  transform: translate(-50%, -50%);
+  --of-line: var(--primary);
+  --of-line-ink: var(--primary);
+  --of-accent: var(--accent);
+  --of-far-op: 0.16;
+  --of-near-op: 0.26;
+}
+
+/* 2.5 取景角标：像版式图里的裁切标记 */
+.hero-geo-book__corners {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(356px, 100%);
+  aspect-ratio: 340 / 513;
+  transform: translate(-50%, -50%);
+  opacity: 0.9;
+  --hg-c: var(--line-strong);
+  background-image:
+    linear-gradient(var(--hg-c), var(--hg-c)), linear-gradient(var(--hg-c), var(--hg-c)),
+    linear-gradient(var(--hg-c), var(--hg-c)), linear-gradient(var(--hg-c), var(--hg-c)),
+    linear-gradient(var(--hg-c), var(--hg-c)), linear-gradient(var(--hg-c), var(--hg-c)),
+    linear-gradient(var(--hg-c), var(--hg-c)), linear-gradient(var(--hg-c), var(--hg-c));
+  background-repeat: no-repeat;
+  background-size:
+    16px 1px, 1px 16px,
+    16px 1px, 1px 16px,
+    16px 1px, 1px 16px,
+    16px 1px, 1px 16px;
+  background-position:
+    left top, left top,
+    right top, right top,
+    left bottom, left bottom,
+    right bottom, right bottom;
+}
+
+/* 2.6 一枚小珊瑚圆点，作为整幅首屏唯一的暖色强调 */
+.hero-geo-book__sun {
+  position: absolute;
+  left: 90%;
+  top: 30%;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.55;
+}
+
+/* ---------- 3. 动画 -------------------------------------------------------- */
+@keyframes hg-breathe {
+  from {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  to {
+    transform: scale(1.06);
+    opacity: 0.85;
+  }
+}
+
+@keyframes hg-drift {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(-28px, 12px, 0) scale(1.05);
+  }
+}
+
+@keyframes hg-twinkle {
+  0%,
+  100% {
+    opacity: var(--hg-o, 0.5);
+  }
+  50% {
+    opacity: calc(var(--hg-o, 0.5) * 0.28);
+  }
+}
+
+/* ---------- 4. 视口降级 ---------------------------------------------------- */
+/* 4.1 单列布局：书居中置顶，承托层跟着换尺寸 */
+@media (max-width: 900px) {
+  .hero-geo-book__stage {
+    width: min(340px, 112%);
+  }
+
+  /* 单列后书缩到 210px 宽，轨道跟着收到 ≈2× 书宽（430 / 210 ≈ 2.05） */
+  .hero-geo-book__rings {
+    width: min(430px, 128%);
+  }
+
+  .hero-geo-book__slab {
+    width: min(232px, 78%);
+    transform: translate(-50%, -50%) rotate(-4deg) translate(14px, 10px);
+  }
+
+  .hero-geo-book__plane {
+    width: min(212px, 72%);
+  }
+
+  .hero-geo-book__corners {
+    width: min(252px, 86%);
+  }
+
+  .hero-geo__grid {
+    -webkit-mask-image: radial-gradient(90% 70% at 50% 22%, #000 0 20%, transparent 70%);
+    mask-image: radial-gradient(90% 70% at 50% 22%, #000 0 20%, transparent 70%);
+  }
+
+  .hero-geo__band {
+    background: linear-gradient(180deg,
+        transparent 22%,
+        var(--tint-primary) 44%,
+        var(--tint-primary) 56%,
+        transparent 78%);
+    inset: -10% -20% 30% -20%;
+  }
+
+}
+
+/* 4.2 移动端：只留骨架，重动画全停，星点减到 8 颗以内 */
+@media (max-width: 700px) {
+  .hero-geo__ticks,
+  .hero-geo__band,
+  .hero-geo-book__plane,
+  .hero-geo-book__corners {
+    display: none;
+  }
+
+  .hero-geo__grid {
+    background-size: 48px 48px;
+    opacity: 0.42;
+  }
+
+  .hero-geo__grid::after {
+    display: none;
+  }
+
+  .hero-geo__star:nth-child(n + 9) {
+    display: none;
+  }
+
+  .hero-geo__star {
+    animation: none;
+  }
+
+  .hero-geo__glow {
+    animation: none;
+    opacity: 0.4;
+  }
+
+  .hero-geo-book__halo {
+    animation: none;
+    opacity: 0.55;
+  }
+
+  .hero-geo-book__stage {
+    width: min(252px, 100%);
+  }
+
+  /* 手机端舞台只有 252px，轨道改按 px 定宽（≈399px 跨度 / 210px 书宽 ≈ 1.9×），
+     仍由 .hero 的 overflow:hidden 裁掉两侧，不会把页面撑出横向滚动条 */
+  .hero-geo-book__rings {
+    width: min(420px, 170%);
+  }
+
+  .hero-geo-book__slab {
+    width: min(196px, 78%);
+    transform: translate(-50%, -50%) rotate(-4deg) translate(11px, 8px);
+    opacity: 0.85;
+  }
+
+  .hero-geo-book__sun {
+    display: none;
+  }
+}
+
+/* 4.4 暂缓（2026-10-29）：首屏运动层整体停用，等新版动效定稿再放开。
+   停用方式与 prefers-reduced-motion 相同 —— animation/transition 一律 none，
+   静态几何（网格、轨道、卫星位置、光晕）全部保留，画面不会塌成空白。
+   .hero-geo 上的 data-hero-anim="off" 由 index.html 显式写上，
+   恢复动效只需去掉那个属性：下面这条规则随属性消失而失效，不必翻 CSS。 */
+.hero-geo[data-hero-anim="off"],
+.hero-geo[data-hero-anim="off"] *,
+.hero-geo[data-hero-anim="off"] *::before,
+.hero-geo[data-hero-anim="off"] *::after {
+  animation: none !important;
+  transition: none !important;
+  will-change: auto !important;
+}
+
+/* 卫星停在各自 --hg-a0 指定的那一格上；去掉 will-change 避免常驻合成层 */
+
+
+/* 呼吸/漂移停在“起点”那一眼，不留被放大或偏移的中间态 */
+.hero-geo[data-hero-anim="off"] .hero-geo__glow,
+.hero-geo[data-hero-anim="off"] .hero-geo-book__halo {
+  opacity: 0.5;
+  transform: none;
+}
+
+/* ---------- 4.3 减少动态：动画一律停用，静态几何全部保留 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .hero-geo,
+  .hero-geo *,
+  .hero-geo *::before,
+  .hero-geo *::after,
+  .hero-geo-book,
+  .hero-geo-book *,
+  .hero-geo-book *::before,
+  .hero-geo-book *::after {
+    animation: none !important;
+    transition: none !important;
+    will-change: auto !important;
+  }
+
+  /* 呼吸/漂移停在“起点”那一眼，不留下被放大的中间态 */
+  .hero-geo__glow,
+  .hero-geo-book__halo {
+    opacity: 0.5;
+    transform: none;
+  }
+}
+
+/* ---------- 5. 书本悬浮动效 -------------------------------------------------
+   鼠标移上书：抬起 + 向左偏转 + 投影拉长。
+   左偏用负角度 rotate() —— 书脊朝右上、书身往左下歪，与轨道盘面 -16° 的斜度同向，
+   不会画面互相拧着。
+   承托层 pointer-events:none，不会抢到事件；这里只作用在 <img> 上，
+   挂 hover 的是图片本身而不是 .hero-art —— 那个盒比图片大一圈。 */
+.hero-art img {
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), filter 0.5s ease;
+  transform-origin: 50% 60%;
+  /* 书封只是图，不是链接：不给手型指针，免得暗示可点 */
+}
+
+@media (hover: hover) {
+  .hero-art img:hover {
+    /* -5.5deg：书脊朝右上、书身往左下歪，与轨道盘面 -16° 的斜度同向。
+       比默认态明显一档，鼠标一上去就能看出是"往左旋"。 */
+    transform: translateY(-10px) rotate(-5.5deg) scale(1.03);
+    filter: drop-shadow(0 30px 44px rgba(31, 35, 48, 0.24));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-art img,
+  .hero-art img:hover {
+    transition: none;
+    transform: none;
+  }
+}
