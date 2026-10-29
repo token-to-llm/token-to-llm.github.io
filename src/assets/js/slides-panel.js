@@ -103,13 +103,22 @@
     }
     /* config 里的 img 相对 src/ 书写，必须过 SITE.url() 才能从仓库根的
        主页解析到 src/assets/…；直接拼进 src 会请求根目录下的 assets/，404。 */
+    /* 格子只有四列、每格约 260px 宽，却一直拿 1440px 的原始 SVG 去铺 —— 十几张
+       加起来 12MB，手机流量下几乎加载不动。缩略图是 720px 的无损 WebP（每张
+       25–70KB），data-full 仍指向原始 SVG，点开放大时才是全尺寸。
+       约定：foo.svg 的同名缩略图是 foo-thumb.webp，与图片放在同一目录。 */
+    function thumbOf(img) {
+      return img.replace(/\.[a-z0-9]+$/i, '-thumb.webp');
+    }
+
     grid.innerHTML = items
       .map(function (p) {
-        const url = window.SITE.url(p.img);
+        const full = window.SITE.url(p.img);
+        const thumb = window.SITE.url(thumbOf(p.img));
         return (
-          '<figure class="sp-tile" data-full="' + esc(url) + '" data-cap="' + esc(p.cap) +
+          '<figure class="sp-tile" data-full="' + esc(full) + '" data-cap="' + esc(p.cap) +
           '" role="button" tabindex="0">' +
-          '<img src="' + esc(url) + '" alt="' + esc(p.alt) + '" loading="lazy">' +
+          '<img src="' + esc(thumb) + '" alt="' + esc(p.alt) + '" loading="lazy" width="720" height="405">' +
           '<figcaption>' + esc(p.cap) + '</figcaption>' +
           '</figure>'
         );

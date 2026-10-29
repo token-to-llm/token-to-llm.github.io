@@ -9,7 +9,7 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="大语言模型：训练、精调与对齐">
 <meta property="og:description" content="把公式、伪代码与可运行代码串成同一条路径。清华大学出版社出版，配 900+ 页教学课件。">
-<meta property="og:image" content="src/assets/img/cover-art.png">
+<meta property="og:image" content="src/assets/img/cover-art.jpg">
 <meta name="twitter:card" content="summary_large_image">
 
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -77,7 +77,7 @@
       </div>
     </div>
     <div class="hero-art">
-      <img src="src/assets/img/book-3d.png" alt="《大语言模型：训练、精调与对齐》立体书样" width="420" height="520">
+      <img src="src/assets/img/book-3d.webp" alt="《大语言模型：训练、精调与对齐》立体书样" width="498" height="752">
     </div>
   </div>
 </section>
@@ -228,7 +228,7 @@
     </div>
     <div class="author-grid">
       <article class="author-card">
-        <div class="avatar"><img src="src/assets/img/author-yang.png" alt="杨耀东" width="270" height="270" loading="lazy"></div>
+        <div class="avatar"><img src="src/assets/img/author-yang.webp" alt="杨耀东" width="144" height="144" loading="lazy"></div>
         <div>
           <h3>杨耀东</h3>
           <div class="author-role">北京大学人工智能研究院研究员（博雅学者）· 博士生导师</div>
@@ -242,7 +242,7 @@
         </div>
       </article>
       <article class="author-card">
-        <div class="avatar"><img src="src/assets/img/author-deng.png" alt="邓杭" width="564" height="564" loading="lazy"></div>
+        <div class="avatar"><img src="src/assets/img/author-deng.webp" alt="邓杭" width="144" height="144" loading="lazy"></div>
         <div>
           <h3>邓杭</h3>
           <div class="author-role">北京大学 PAIR-Lab 科研助理</div>
@@ -472,8 +472,8 @@
         '<p><b>实现技巧</b>　工程上可直接用 <code>x * torch.rsqrt(x.pow(2).mean(-1, keepdim=True) + eps)</code> 一行算完，再把 $\\vgamma$ 乘上。相比 LayerNorm 省掉一次均值归约与一次减法，在 GPU 上体现为更少的 kernel 与更短的依赖链——“快 10%–30%”是这么来的，不是玄学。</p>' +
         '<p><b>实测</b>　原论文在翻译、分类、语言建模三项上对比：多数任务与 LayerNorm 持平或略优，WMT14 英德翻译 BLEU 提升 0.3。</p>' +
         '<div class="writing-figs">' +
-          '<figure class="writing-fig" data-full="src/assets/img/slides/ch04-p022.svg" data-cap="课件 4.2.3 节“缩放对输出的影响”，图 4.2(a)(b)" role="button" tabindex="0"><img src="src/assets/img/slides/ch04-p022.svg" alt="课件中缩放对输出的影响" loading="lazy"><figcaption>课件 4.2.3 节“缩放对输出的影响”，图 4.2(a)(b)</figcaption></figure>' +
-          '<figure class="writing-fig" data-full="src/assets/img/slides/ch04-p025.svg" data-cap="课件 4.2.3 节“梯度分析：输入梯度的推导”，式 (4-16) 至 (4-20)" role="button" tabindex="0"><img src="src/assets/img/slides/ch04-p025.svg" alt="课件中 RMSNorm 输入梯度的推导" loading="lazy"><figcaption>课件 4.2.3 节“梯度分析：输入梯度的推导”，式 (4-16) 至 (4-20)</figcaption></figure>' +
+          '<figure class="writing-fig" data-full="src/assets/img/slides/ch04-p022.svg" data-cap="课件 4.2.3 节“缩放对输出的影响”，图 4.2(a)(b)" role="button" tabindex="0"><img src="src/assets/img/slides/ch04-p022-thumb.webp" alt="课件中缩放对输出的影响" loading="lazy"><figcaption>课件 4.2.3 节“缩放对输出的影响”，图 4.2(a)(b)</figcaption></figure>' +
+          '<figure class="writing-fig" data-full="src/assets/img/slides/ch04-p025.svg" data-cap="课件 4.2.3 节“梯度分析：输入梯度的推导”，式 (4-16) 至 (4-20)" role="button" tabindex="0"><img src="src/assets/img/slides/ch04-p025-thumb.webp" alt="课件中 RMSNorm 输入梯度的推导" loading="lazy"><figcaption>课件 4.2.3 节“梯度分析：输入梯度的推导”，式 (4-16) 至 (4-20)</figcaption></figure>' +
         '</div>',
     },
     {
@@ -490,8 +490,8 @@
         '<p><b>实现技巧</b>　算法 16 是批量 Online-Softmax，17 是一次循环的注意力，18 是批量前向，19 是反向，20 与 21 是 V2 的前向与反向——五个算法各自给出分块、加载、片上计算与写回的全过程。反向不保存中间量，按块重算，用多出来的算力换掉 HBM 往返。V2 进一步改掉线程块与线程束的任务划分，把 GEMM 峰值利用率从 25%–40% 提到 50%–73%，这才是第二次提速的来源。</p>' +
         '<p><b>实测</b>　GPT-2、1024 长度预训练上比 Hugging Face 框架快约 2–3 倍。</p>' +
         '<div class="writing-figs">' +
-          '<figure class="writing-fig" data-full="src/assets/img/slides/ch10-p045.svg" data-cap="课件 10.2.2 节“SRAM 与 HBM 的数据流向”，图 10.11" role="button" tabindex="0"><img src="src/assets/img/slides/ch10-p045.svg" alt="课件中 SRAM 与 HBM 的数据流向" loading="lazy"><figcaption>课件 10.2.2 节“SRAM 与 HBM 的数据流向”，图 10.11</figcaption></figure>' +
-          '<figure class="writing-fig" data-full="src/assets/img/slides/ch10-p041.svg" data-cap="课件 10.2.2 节“块输出的合并”，式 (10-59) 至 (10-64)" role="button" tabindex="0"><img src="src/assets/img/slides/ch10-p041.svg" alt="课件中块输出的合并推导" loading="lazy"><figcaption>课件 10.2.2 节“块输出的合并”，式 (10-59) 至 (10-64)</figcaption></figure>' +
+          '<figure class="writing-fig" data-full="src/assets/img/slides/ch10-p045.svg" data-cap="课件 10.2.2 节“SRAM 与 HBM 的数据流向”，图 10.11" role="button" tabindex="0"><img src="src/assets/img/slides/ch10-p045-thumb.webp" alt="课件中 SRAM 与 HBM 的数据流向" loading="lazy"><figcaption>课件 10.2.2 节“SRAM 与 HBM 的数据流向”，图 10.11</figcaption></figure>' +
+          '<figure class="writing-fig" data-full="src/assets/img/slides/ch10-p041.svg" data-cap="课件 10.2.2 节“块输出的合并”，式 (10-59) 至 (10-64)" role="button" tabindex="0"><img src="src/assets/img/slides/ch10-p041-thumb.webp" alt="课件中块输出的合并推导" loading="lazy"><figcaption>课件 10.2.2 节“块输出的合并”，式 (10-59) 至 (10-64)</figcaption></figure>' +
         '</div>',
     },
     {
@@ -508,8 +508,8 @@
         '<p><b>实现技巧</b>　算法 15 分三层循环：外层把当前策略复制成参考模型，中层采样问题、生成回答、算奖励与优势，内层在固定样本上反复最大化目标，取 $\\mu=1$ 即可简化训练。组内标准化要加一个很小的 $\\epsilon$，否则同组全对或全错时会除零——这类数值细节书里单独交代。</p>' +
         '<p><b>代价</b>　没有价值模型，就无法对长期价值建模，过程层面只能评估单步对最终结果的影响。书里也如实写了这一点：省下的显存与稳定性，是用“失去细粒度信用分配”换来的。</p>' +
         '<div class="writing-figs">' +
-          '<figure class="writing-fig" data-full="src/assets/img/slides/ch08-p086.svg" data-cap="课件 8.5.2 节“GRPO 算法”，图 8.17" role="button" tabindex="0"><img src="src/assets/img/slides/ch08-p086.svg" alt="课件中 GRPO 算法流程图" loading="lazy"><figcaption>课件 8.5.2 节“GRPO 算法”，图 8.17</figcaption></figure>' +
-          '<figure class="writing-fig" data-full="src/assets/img/slides/ch08-p088.svg" data-cap="课件 8.5.2 节“GRPO 的优化目标”，页面上正是式 (8-35) 与 K3 估计量" role="button" tabindex="0"><img src="src/assets/img/slides/ch08-p088.svg" alt="课件中 GRPO 的优化目标" loading="lazy"><figcaption>课件 8.5.2 节“GRPO 的优化目标”，页面上正是式 (8-35) 与 K3 估计量</figcaption></figure>' +
+          '<figure class="writing-fig" data-full="src/assets/img/slides/ch08-p086.svg" data-cap="课件 8.5.2 节“GRPO 算法”，图 8.17" role="button" tabindex="0"><img src="src/assets/img/slides/ch08-p086-thumb.webp" alt="课件中 GRPO 算法流程图" loading="lazy"><figcaption>课件 8.5.2 节“GRPO 算法”，图 8.17</figcaption></figure>' +
+          '<figure class="writing-fig" data-full="src/assets/img/slides/ch08-p088.svg" data-cap="课件 8.5.2 节“GRPO 的优化目标”，页面上正是式 (8-35) 与 K3 估计量" role="button" tabindex="0"><img src="src/assets/img/slides/ch08-p088-thumb.webp" alt="课件中 GRPO 的优化目标" loading="lazy"><figcaption>课件 8.5.2 节“GRPO 的优化目标”，页面上正是式 (8-35) 与 K3 估计量</figcaption></figure>' +
         '</div>',
     },
   ];
@@ -626,17 +626,19 @@
   /* ---- 课件墙：改由 src/assets/js/slides-panel.js 接管（图片预览 / PDF 浏览 两个 tab） ---- */
 
   /* ---- 书页样张：六页，与 main_v2.md 的 内容1-6 一致 ---- */
+  /* 格子里铺的是 720px 缩略图（每张约 55–100KB），data-full 指向 1600px 全图，
+     点开才拉。此前缩略图与灯箱共用同一张 1600px 原图，等于用小图的版面付大图的流量。 */
   const SAMPLES = [
-    { src: 'src/assets/img/sample-1.png', cap: '书页样张 1' },
-    { src: 'src/assets/img/sample-2.png', cap: '书页样张 2' },
-    { src: 'src/assets/img/sample-3.png', cap: '书页样张 3' },
-    { src: 'src/assets/img/sample-4.png', cap: '书页样张 4' },
-    { src: 'src/assets/img/sample-5.png', cap: '书页样张 5' },
-    { src: 'src/assets/img/sample-6.png', cap: '书页样张 6' },
+    { src: 'src/assets/img/sample-1.webp', thumb: 'src/assets/img/sample-1-thumb.webp', cap: '书页样张 1' },
+    { src: 'src/assets/img/sample-2.webp', thumb: 'src/assets/img/sample-2-thumb.webp', cap: '书页样张 2' },
+    { src: 'src/assets/img/sample-3.webp', thumb: 'src/assets/img/sample-3-thumb.webp', cap: '书页样张 3' },
+    { src: 'src/assets/img/sample-4.webp', thumb: 'src/assets/img/sample-4-thumb.webp', cap: '书页样张 4' },
+    { src: 'src/assets/img/sample-5.webp', thumb: 'src/assets/img/sample-5-thumb.webp', cap: '书页样张 5' },
+    { src: 'src/assets/img/sample-6.webp', thumb: 'src/assets/img/sample-6-thumb.webp', cap: '书页样张 6' },
   ];
   document.getElementById('home-samples').innerHTML = SAMPLES.map(function (s, i) {
     return '<button class="sample-shot" data-full="' + s.src + '" data-cap="' + s.cap + '">' +
-      '<img src="' + s.src + '" alt="' + s.cap + '" loading="lazy">' +
+      '<img src="' + s.thumb + '" alt="' + s.cap + '" loading="lazy" width="720" height="509">' +
     '</button>';
   }).join('');
 
