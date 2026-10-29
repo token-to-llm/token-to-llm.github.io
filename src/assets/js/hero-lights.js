@@ -1,8 +1,12 @@
 /* hero-lights.js —— 首屏 hero 的“符号呼吸”层（自挂载）。
 
-   满色不透明，只有字形本身在 · ✢ ✳ ✶ ✻ ✽ 之间来回变换。每颗的符号序列、
-   停留时长、起始相位都不同，所以二十颗永远不同步。
+   满色不透明，只有字形本身在 · ✢ ✳ ✶ ✻ ✽ 之间来回变换。变换不是打乱顺序，
+   而是一条固定的往返路径：1→2→3→4→5→6→5→4→3→2→1→2→… 每颗只是从这条
+   路径的某个点起跑（起始相位不同），所以二十颗永不同步，但走向始终一致。
+   手机端（≤700px，与 hero-lights.css 的断点一致）跳过 ✳：该字符在移动端
+   会被当成彩色 emoji 渲染、带一块绿底，路径因此变成 1→2→4→5→6→5→4→2→1。
 
+   位置每次加载随机生成（带最小间距，避免叠在一起），不用常量表。
    已有 .hero-lights 就跳过；整层 pointer-events:none、aria-hidden；找不到 .hero
    安静退出。无 fetch、无依赖，file:// 可运行；页面没引 hero-lights.css 时按自身
    路径补一个 <link>。 */
@@ -35,76 +39,141 @@
     return el;
   }
 
-  /* 二十颗的常量表。set 是轮换的符号序列，step 是每个符号停留的毫秒数；
-     层次只靠字号拉开，没有透明度这个维度。
+  /* ---------- 变换序列 ------------------------------------------------------ */
 
-     布局（1440 宽桌面首屏）：左栏 x < 52% 只放 9 颗且字号压小，满色之后靠体积
-     收敛，不与汉字笔画抢视线；右半幅是书封与轨道，密度最高；中段右侧
-     （x≈80–95, y≈60–70）留空做呼吸区。任何两颗至少隔开约 8% 宽度。 */
-  var GLYPHS = [
-    /* 左栏（x < 52%） */
-    { set: ['·', '✢', '✳'],         x: 3,  y: 9,  size: 24, tone: 'base',   step: 780, phase: 0 },
-    { set: ['✢', '✳', '✶', '✻'],   x: 20, y: 4,  size: 11, tone: 'base',   step: 560, phase: 700 },
-    { set: ['✳', '✶', '✽'],         x: 41, y: 3,  size: 12, tone: 'base',   step: 640, phase: 1450 },
-    { set: ['✶', '✻', '✽', '·'],   x: 3,  y: 38, size: 14, tone: 'base',   step: 600, phase: 2300 },
-    { set: ['✻', '✽', '✢'],         x: 15, y: 64, size: 11, tone: 'base',   step: 720, phase: 900 },
-    { set: ['✽', '·', '✳'],         x: 3,  y: 93, size: 13, tone: 'base',   step: 660, phase: 1750 },
-    { set: ['·', '✢', '✳', '✶'],   x: 28, y: 90, size: 17, tone: 'base',   step: 580, phase: 400 },
-    { set: ['✢', '✳', '✻'],         x: 44, y: 76, size: 10, tone: 'base',   step: 500, phase: 2600 },
-    { set: ['✳', '✶', '✽', '·'],   x: 24, y: 27, size: 11, tone: 'base',   step: 700, phase: 1200 },
+  /* 六个符号，按序号 1–6 排好。往返路径由 buildCycle 从它推出来。 */
+  var CHARS = ['·', '✢', '✳', '✶', '✻', '✽'];
 
-    /* 右半幅上缘（书的上方） */
-    { set: ['✶', '✻', '✽'],         x: 58, y: 10, size: 12, tone: 'base',   step: 620, phase: 320 },
-    { set: ['✻', '✽', '·', '✢'],   x: 74, y: 22, size: 19, tone: 'accent', step: 640, phase: 1900 },
-    { set: ['✽', '·', '✢', '✳'],   x: 95, y: 4,  size: 14, tone: 'base',   step: 560, phase: 800 },
-    { set: ['·', '✢', '✳'],         x: 97, y: 34, size: 11, tone: 'base',   step: 820, phase: 2200 },
+  /* 强制文本呈现（VS15）。这几个字符在部分系统上会被匹配成 emoji，
+     带上 VS15 后一律走字形字体，不会再出现彩色／底色的方块。 */
+  var VS15 = '︎';
 
-    /* 右半幅中段（书身两侧） */
-    { set: ['✢', '✳', '✶', '✻'],   x: 86, y: 52, size: 20, tone: 'accent', step: 740, phase: 300 },
-    { set: ['✳', '✶', '✻', '✽'],   x: 68, y: 44, size: 12, tone: 'base',   step: 560, phase: 1500 },
-    { set: ['✶', '✻', '✽'],         x: 56, y: 58, size: 13, tone: 'base',   step: 660, phase: 2450 },
-    { set: ['✻', '✽', '·'],         x: 88, y: 30, size: 10, tone: 'accent', step: 500, phase: 1050 },
+  var MOBILE_MQ = '(max-width: 700px)';   /* 与 hero-lights.css 的窄屏断点一致 */
+  var MOBILE_SKIP = '✳';                   /* 移动端渲染成带绿底的 emoji，跳过 */
 
-    /* 右半幅下缘 / 右下角 */
-    { set: ['✽', '·', '✢', '✳'],   x: 76, y: 74, size: 18, tone: 'base',   step: 700, phase: 1650 },
-    { set: ['·', '✢', '✳'],         x: 96, y: 78, size: 12, tone: 'accent', step: 600, phase: 550 },
-    { set: ['✢', '✳', '✶', '✻', '✽'], x: 61, y: 88, size: 24, tone: 'accent', step: 880, phase: 1950 }
-  ];
+  var COUNT = 20;
 
-  /* 唯一的一个共享计时器，不用逐帧 rAF：换字是瞬时的，60ms 一个 tick 就够。
-     每拍只改该换字的那几颗的 textContent，不触发重排；页面切后台被节流时下标
-     由 Date.now() 直接算出，回到前台立刻对齐。 */
+  /* 生成往返路径：1,2,…,n,n-1,…,2，再接回 1 循环。
+     n=6 → 1 2 3 4 5 6 5 4 3 2；n=5（移动端去掉 ✳）→ 1 2 4 5 6 5 4 2。
+     路径本身是闭环，所以任何一颗从哪一格起跑，都只是进入环的位置不同，
+     走向依然是同一条来回序列。 */
+  function buildCycle(isMobile) {
+    var seq = [];
+    for (var i = 0; i < CHARS.length; i++) {
+      if (isMobile && CHARS[i] === MOBILE_SKIP) continue;
+      seq.push(CHARS[i]);
+    }
+    var path = [];
+    var j;
+    for (j = 0; j < seq.length; j++) path.push(j);
+    for (j = seq.length - 2; j >= 1; j--) path.push(j);
+    return { seq: seq, path: path };
+  }
+
+  function mobileQuery() {
+    if (!window.matchMedia) return null;
+    try {
+      return window.matchMedia(MOBILE_MQ);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /* ---------- 随机位置 ------------------------------------------------------ */
+
+  /* 每颗的位置每次加载现抽，但保留一个最小间距：纯均匀随机常会两三点重合，
+     满色字形叠在一起会糊成一块。做法是每颗最多试 30 次，取其中离已有
+     点最远的一个；试完仍不够远就用当下最好的那个，不无限重试。
+     横向权重 ×1.6：首屏是宽幅，同样的百分比间距在横向上看着更近。 */
+  var POS_MARGIN = 4;      /* 离边缘留余量，别被 overflow:hidden 切掉 */
+  var POS_MIN_DIST = 15;   /* 任意两颗的最小间距（百分比空间） */
+
+  function randomPositions(n) {
+    var pts = [];
+    for (var i = 0; i < n; i++) {
+      var best = null;
+      var bestD = -1;
+      for (var tries = 0; tries < 30; tries++) {
+        var x = POS_MARGIN + Math.random() * (100 - POS_MARGIN * 2);
+        var y = POS_MARGIN + Math.random() * (100 - POS_MARGIN * 2);
+        var d = Infinity;
+        for (var j = 0; j < pts.length; j++) {
+          var dx = (x - pts[j].x) * 1.6;
+          var dy = y - pts[j].y;
+          var dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < d) d = dist;
+        }
+        if (d > bestD) {
+          bestD = d;
+          best = { x: x, y: y };
+        }
+        if (d >= POS_MIN_DIST) break;
+      }
+      pts.push(best);
+    }
+    return pts;
+  }
+
+  /* 字号仍分几档，保留“大锚点 + 小碎点”的层次，只是不再固定绑在某颗身上。 */
+  var SIZES = [10, 11, 11, 12, 12, 13, 13, 14, 17, 19, 20, 24];
+
+  function pickSize() {
+    return SIZES[Math.floor(Math.random() * SIZES.length)];
+  }
+
+  function pickStep() {
+    /* 50 的整数倍，和 TICK 对齐，避免节拍被抖 */
+    return 500 + Math.floor(Math.random() * 9) * 50;   /* 500–900ms */
+  }
+
+  /* ---------- 计时 ---------------------------------------------------------- */
+
+  /* 唯一的一个共享计时器，不用逐帧 rAF：换字是瞬时的，50ms 一个 tick 就够。
+     每拍只改该换字的那几颗的 textContent，不触发重排；页面切后台被节流时
+     下标由 Date.now() 直接算出，回到前台立刻对齐。 */
   var items = [];
+  var cycle = buildCycle(false);
+  var mq = mobileQuery();
 
-  /* 与最短 step（500ms）整除，避免 0.5s 的节拍被抖成 0.48/0.54 */
   var TICK = 50;
+
+  function glyphText(index) {
+    return cycle.seq[index] + VS15;
+  }
 
   function buildGlyphs(layer) {
     var frag = document.createDocumentFragment();
     var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var pts = randomPositions(COUNT);
 
-    for (var i = 0; i < GLYPHS.length; i++) {
-      var g = GLYPHS[i];
+    for (var i = 0; i < COUNT; i++) {
       var el = div('hl-glyph');
-      if (g.tone === 'accent') el.className += ' hl-glyph--accent';
+      /* 约四分之一的字形取 accent 档，随机分配，每次加载的节奏都不一样 */
+      if (Math.random() < 0.22) el.className += ' hl-glyph--accent';
 
       /* 位置 / 字号走自定义属性而不是内联 left/top：内联样式优先级高于媒体查询里的
          普通声明，写成变量后断点才好接手。 */
-      el.style.setProperty('--hl-x', g.x + '%');
-      el.style.setProperty('--hl-y', g.y + '%');
-      el.style.setProperty('--hl-fs', g.size + 'px');
+      el.style.setProperty('--hl-x', pts[i].x.toFixed(2) + '%');
+      el.style.setProperty('--hl-y', pts[i].y.toFixed(2) + '%');
+      el.style.setProperty('--hl-fs', pickSize() + 'px');
 
-      el.textContent = g.set[0];
+      /* 随机起始相位：决定它从往返路径的哪一格起跑，也就是“不同的启始”。
+         相位只决定入环位置，不改变路径本身——所以依旧是来回循环。 */
+      var step = pickStep();
+      var phase = Math.floor(Math.random() * 100000);
 
-      items.push({
+      var it = {
         el: el,
-        set: g.set,
-        step: g.step,
-        phase: g.phase,
-        idx: 0,
+        step: step,
+        phase: phase,
+        idx: -1,
         frozen: reduced      /* 减少动态时停在第一个符号 */
-      });
+      };
 
+      it.idx = reduced ? 0 : Math.floor((Date.now() + phase) / step) % cycle.path.length;
+      el.textContent = reduced ? cycle.seq[0] + VS15 : glyphText(cycle.path[it.idx]);
+
+      items.push(it);
       frag.appendChild(el);
     }
     layer.appendChild(frag);
@@ -112,15 +181,24 @@
 
   function tick() {
     var now = Date.now();
+    var path = cycle.path;
     for (var i = 0; i < items.length; i++) {
       var it = items[i];
       if (it.frozen) continue;
-      var idx = Math.floor((now + it.phase) / it.step) % it.set.length;
+      var idx = Math.floor((now + it.phase) / it.step) % path.length;
       if (idx !== it.idx) {
         it.idx = idx;
-        it.el.textContent = it.set[idx];
+        it.el.textContent = glyphText(path[idx]);
       }
     }
+  }
+
+  /* 断点切换时重建往返路径（移动端会去掉 ✳）。下标全部作废，
+     下一拍按新路径重算，字形立刻跟上。 */
+  function onMobileChange() {
+    cycle = buildCycle(mq ? mq.matches : false);
+    for (var i = 0; i < items.length; i++) items[i].idx = -1;
+    tick();
   }
 
   function mount() {
@@ -138,6 +216,7 @@
     layer.style.pointerEvents = 'none';
     layer.style.zIndex = '0';
 
+    cycle = buildCycle(mq ? mq.matches : false);
     buildGlyphs(layer);
 
     /* 插成第一个子元素，落在所有内容之下 */
@@ -161,6 +240,10 @@
         if (document.hidden) stop();
         else { tick(); start(); }
       });
+    }
+    if (mq) {
+      if (mq.addEventListener) mq.addEventListener('change', onMobileChange);
+      else if (mq.addListener) mq.addListener(onMobileChange);
     }
   }
 
