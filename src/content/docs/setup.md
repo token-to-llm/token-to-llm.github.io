@@ -68,20 +68,24 @@ python tests/run_all.py
 
 首次运行要编译并缓存 Matplotlib 的字体，耗时略长；之后再跑会快很多。
 
-## 5. 章节与目录对照
+## 5. 章节与代码目录对照
 
-| 章 | 内容 | 代码目录 | 课件 |
-| --- | --- | --- | --- |
-| 1 | 大语言模型综述 | `src/llm/` | `ppt/llm.pdf` |
-| 2 | Transformer 模型 | `src/transformer/` | `ppt/transformer.pdf` |
-| 3 | GPT 模型 | `src/gpt/` | `ppt/gpt.pdf` |
-| 4 | Llama 模型 | `src/llama/` | `ppt/llama.pdf` |
-| 5 | 有监督微调 | `src/sft/` | `ppt/finetune.pdf` |
-| 6 | 提示词工程和 LLM 应用 | `src/prompt/` | `ppt/prompt.pdf` |
-| 7 | 强化学习 | `src/rl/` | `ppt/rl.pdf` |
-| 8 | 基于强化学习的大语言模型训练 | `src/rl-llm/` | `ppt/rl-llm.pdf` |
-| 9 | 大语言模型的训练 | `src/training/` | `ppt/training.pdf` |
-| 10 | 高效大语言模型 | `src/inference/` | `ppt/inference.pdf` |
+| 章 | 内容 | 代码目录 |
+| --- | --- | --- |
+| 1 | 大语言模型综述 | `src/llm/` |
+| 2 | Transformer 模型 | `src/transformer/` |
+| 3 | GPT 模型 | `src/gpt/` |
+| 4 | Llama 模型 | `src/llama/` |
+| 5 | 有监督微调 | `src/sft/` |
+| 6 | 提示词工程和 LLM 应用 | `src/prompt/` |
+| 7 | 强化学习 | `src/rl/` |
+| 8 | 基于强化学习的大语言模型训练 | `src/rl-llm/` |
+| 9 | 大语言模型的训练 | `src/training/` |
+| 10 | 高效大语言模型 | `src/inference/` |
+
+课件不按章分发，而是按 16 课时导出，每次课一份 PDF，文件在仓库
+[`ppt_16/`](https://github.com/token-to-llm/token-to-llm/tree/main/ppt_16) 下。
+课时与文件的对应关系见[课时安排](teaching.html)。
 
 ## 6. 常见问题
 

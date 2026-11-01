@@ -130,7 +130,89 @@
   border-color: var(--tint-primary-strong);
 }
 
-/* ---------- 3. 阅读器外壳 ---------- */
+/* ---------- 3. 课时选择条 ----------
+   16 课时按章分组，一条一份 PDF。横向可滚，不换行：
+   换行会把阅读器挤到一两屏之外，滚一条比铺四行更省高度。 */
+.sp-lectures {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 4px 10px;
+  margin-bottom: 12px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  border-bottom: 1px solid var(--line);
+}
+
+.sp-lecture-ch {
+  flex: none;
+  margin-left: 10px;
+  padding-left: 12px;
+  border-left: 1px solid var(--line-strong);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+.sp-lectures .sp-lecture-ch:first-child {
+  margin-left: 0;
+  padding-left: 0;
+  border-left: 0;
+}
+
+.sp-lecture {
+  appearance: none;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 11px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--paper);
+  color: var(--ink-2);
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.sp-lecture:hover {
+  color: var(--ink);
+  background: var(--paper-2);
+  border-color: var(--line-strong);
+}
+
+.sp-lecture.is-active,
+.sp-lecture.is-active:hover {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+.sp-lecture-no {
+  font-variant-numeric: tabular-nums;
+  opacity: 0.72;
+}
+
+.sp-lecture.is-active .sp-lecture-no {
+  opacity: 0.85;
+}
+
+.sp-lecture-now {
+  margin: 0 0 12px;
+  font-size: 0.86rem;
+  color: var(--ink-2);
+}
+
+/* ---------- 4. 阅读器外壳 ---------- */
 .sp-viewer {
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -504,6 +586,18 @@
   }
   .sp-grid {
     gap: 10px;
+  }
+  .sp-lectures {
+    gap: 5px;
+  }
+  .sp-lecture {
+    height: 28px;
+    padding: 0 9px;
+    font-size: 0.76rem;
+  }
+  .sp-lecture-ch {
+    margin-left: 6px;
+    padding-left: 8px;
   }
 }
 

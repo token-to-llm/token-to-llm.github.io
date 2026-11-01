@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>课时安排 — 大语言模型：训练、精调与对齐</title>
-<meta name="description" content="面向一学期 16 课时的教学安排建议：十章各次课对应的小节、拆分点与讲授要点。">
+<meta name="description" content="全书 16 课时课件分配表与页内预览，按章按课时切换，直接在线阅读每份 PDF。">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="../assets/css/site.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%234C54A4'/><text x='16' y='22' font-family='sans-serif' font-size='14' font-weight='700' fill='white' text-anchor='middle'>LM</text></svg>">
@@ -18,11 +18,35 @@
     <div class="doc-body">
       <div class="prose">
         <h1>课时安排</h1>
-        <p>全书十章合计 900+ 页课件。按一学期 16 课时讲授时，建议把公式与推导密度最大的六章拆成上下两部分，其余四章各占一次课。下表给出每次课覆盖的小节、拆分点与讲授侧重。</p>
-        <p>拆分点都落在节的自然边界上，不切断一个完整方法的推导链；<b>课件本身不拆</b>，仍以整章 PDF 为单位分发。</p>
+        <p>全书十章合计 900+ 页课件。按一学期 <b>16 课时</b>讲授时，公式与推导密度最大的第 2、4、7、8、9、10 章各拆成上下两次课，其余四章各占一次课。拆分点都落在节的自然边界上，不切断一个完整方法的推导链。</p>
       </div>
 
-      <div class="table-scroll"><table class="chapter-table" id="plan16" style="margin-top:28px"></table></div>
+      <div class="prose" style="margin-top:48px">
+        <h2 id="h-viewer">课件预览</h2>
+        <p>选一条课时，下方即载入该次课对应的 PDF。也可以直接跳到<a href="#plan16">分配表</a>，按章挑选。</p>
+      </div>
+
+      <div class="lec-picker" id="lec-picker" role="group" aria-label="选择课时"></div>
+
+      <figure class="lec-viewer">
+        <div class="lec-frame-box" id="lec-frame-box">
+          <iframe id="lec-frame" title="课时课件 PDF 预览" loading="lazy"></iframe>
+          <div class="lec-placeholder" id="lec-placeholder">
+            <p>滚动到这里会自动载入第 1 课时课件</p>
+          </div>
+        </div>
+        <figcaption class="lec-cap">
+          <span id="lec-cap-text">第 1 课时 · 第 1 章 大语言模型综述</span>
+          <a id="lec-cap-link" href="https://github.com/token-to-llm/token-to-llm/tree/main/ppt_16" target="_blank" rel="noopener">在仓库中查看</a>
+        </figcaption>
+      </figure>
+
+      <div class="prose" style="margin-top:56px">
+        <h2 id="h-plan">16 课时分配表</h2>
+        <p>每行一次课：覆盖的小节、讲授侧重，以及对应的课件文件。点“看课件”直接把 PDF 载入上方预览。</p>
+      </div>
+
+      <div class="table-scroll"><table class="chapter-table lec-table" id="plan16" style="margin-top:20px"></table></div>
 
       <div class="callout" style="margin-top:24px">
         <span class="callout-title">课时伸缩</span>
@@ -30,18 +54,14 @@
       </div>
 
       <div class="prose" style="margin-top:48px">
-        <h2 id="h-read-order">按章阅读顺序</h2>
-        <p><b>第 1—4 章</b>：建立“语言模型—注意力—解码器模型”的主线，第 1 章术语密集，可先粗读。<br>
-        <b>第 5—6 章</b>：从微调讲到应用层，第 6 章的 RAG 与智能体可与第 8 章的对齐内容对照阅读。<br>
-        <b>第 7—8 章</b>：全书重心。第 7 章的策略梯度与演员-评论家是第 8 章 PPO、DPO 的前置。<br>
-        <b>第 9—10 章</b>：系统视角，可与第 4 章的键值缓存、第 2 章的多头注意力相互印证。</p>
-
-        <h2 id="h-slides">课件使用说明</h2>
+        <h2 id="h-slides">课件文件</h2>
         <ul>
-          <li>课件以 <b>PDF</b> 格式提供，16:9 版式，无动画，可离线播放或直接投影。</li>
-          <li>每章一个 PDF，页数与书籍章节一一对应；正文中的图、表、公式与课件同源核对。</li>
-          <li>封面、章节分隔页、公式推导、代码对照与思考题按统一版式编排。</li>
-          <li>整章 PDF 见<a href="chapters.html">章节指引</a>各章卡片，或直接在<a href="https://github.com/token-to-llm/token-to-llm" target="_blank" rel="noopener">代码仓库 token-to-llm</a>中获取。</li>
+          <li>PDF 格式，16:9 版式，无动画，可离线播放或直接投影。</li>
+          <li>按 16 课时交付，每次课一份；文件名与上面的分配表一一对应。</li>
+          <li>全部 16 份 PDF 的仓库目录：
+            <a href="https://github.com/token-to-llm/token-to-llm/tree/main/ppt_16" target="_blank" rel="noopener">ppt_16/</a>，
+            清单另有 <a href="https://github.com/token-to-llm/token-to-llm/blob/main/ppt_16/README.md" target="_blank" rel="noopener">README.md</a>；若与本页有出入，以 README 为准。</li>
+          <li>章节目录与整书编排逻辑见<a href="chapters.html">章节指引</a>。</li>
         </ul>
       </div>
     </div>
@@ -53,6 +73,7 @@
 
 <script src="../assets/js/site.config.js"></script>
 <script src="../assets/js/chapters.js"></script>
+<script src="../assets/js/ppt16.js"></script>
 <script src="../assets/js/chrome.js"></script>
 <script>
 (function () {
@@ -60,41 +81,115 @@
   mountSidebar('teaching');
   mountTocFromDom();
 
-  const rows = [];
-  let i = 0;
-  CHAPTERS.forEach(function (c) {
-    const total = CHAPTERS.length;
-    if (c.split16) {
-      const halves = [
-        { label: '（上）', secs: c.split16.upper, note: (c.split16.note.split('；')[0] || '').replace(/^上：/, '') },
-        { label: '（下）', secs: c.split16.lower, note: (c.split16.note.split('；')[1] || '').replace(/^下：/, '') },
-      ];
-      halves.forEach(function (h, k) {
-        i++;
-        rows.push(
-          '<tr>' +
-          '<td class="ch-no">' + String(i).padStart(2, '0') + '</td>' +
-          '<td class="ch-name">' + c.title + h.label + '</td>' +
-          '<td class="ch-sec">' + h.secs.join('、') + '</td>' +
-          '<td style="font-size:.86rem">' + h.note + '</td>' +
-          '</tr>'
-        );
-      });
-    } else {
-      i++;
-      rows.push(
-        '<tr>' +
-        '<td class="ch-no">' + String(i).padStart(2, '0') + '</td>' +
-        '<td class="ch-name">' + c.title + '</td>' +
-        '<td class="ch-sec">' + c.sections.filter(function (s) { return s.title.indexOf('附录') < 0; }).map(function (s) { return s.no; }).join('、') + '</td>' +
-        '<td style="font-size:.86rem">' + c.sections[0].note + '</td>' +
-        '</tr>'
-      );
+  const LECTURES = (window.PPT16 && window.PPT16.lectures) || [];
+  const BASE = (window.SITE && window.SITE.ppt && window.SITE.ppt.base) || '';
+  const REPO_TREE = (window.PPT16 && window.PPT16.dir) || '';
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+
+  /* jsDelivr 上带 #view=FitH，浏览器内置阅读器会按宽度铺满；
+     toolbar 保留，读者想下载或打印时不必绕回仓库。 */
+  function pdfHref(file) {
+    return BASE + file + '#view=FitH';
+  }
+
+  const picker = document.getElementById('lec-picker');
+  const frame = document.getElementById('lec-frame');
+  const placeholder = document.getElementById('lec-placeholder');
+  const capText = document.getElementById('lec-cap-text');
+  const capLink = document.getElementById('lec-cap-link');
+  let current = '';
+
+  function show(file) {
+    const lec = LECTURES.filter(function (l) { return l.file === file; })[0];
+    if (!lec || file === current) {
+      if (lec) { capText.textContent = '第 ' + lec.no + ' 课时 · ' + lec.title; }
+      return;
     }
+    current = file;
+    if (placeholder) placeholder.hidden = true;
+    frame.src = pdfHref(file);
+    frame.hidden = false;
+    capText.textContent = '第 ' + lec.no + ' 课时 · ' + lec.title;
+    capLink.href = (REPO_TREE || '') + '/' + file;
+    capLink.textContent = '在仓库中查看';
+
+    picker.querySelectorAll('[data-file]').forEach(function (b) {
+      const on = b.dataset.file === file;
+      b.classList.toggle('is-active', on);
+      if (on) b.setAttribute('aria-current', 'true');
+      else b.removeAttribute('aria-current');
+    });
+  }
+
+  /* ---- 选择条：16 条按章分组 ---- */
+  let group = '';
+  picker.innerHTML = LECTURES.map(function (lec, i) {
+    let head = '';
+    if (lec.chapter !== group) {
+      group = lec.chapter;
+      head = '<span class="lec-ch">第 ' + group + ' 章</span>';
+    }
+    return head +
+      '<button type="button" class="lec-btn' + (i === 0 ? ' is-active' : '') + '"' +
+        ' data-file="' + esc(lec.file) + '"' + (i === 0 ? ' aria-current="true"' : '') +
+        ' title="' + esc(lec.title) + '">' +
+        '<span class="lec-no">' + lec.no + '</span>' +
+        '<span class="lec-name">' + esc(lec.short) + '</span>' +
+      '</button>';
+  }).join('');
+
+  picker.addEventListener('click', function (e) {
+    const btn = e.target.closest('[data-file]');
+    if (btn) show(btn.dataset.file);
   });
 
+  /* ---- 分配表：与 ppt_16/README.md 同列 ---- */
   document.getElementById('plan16').innerHTML =
-    '<thead><tr><th>序</th><th>内容</th><th>覆盖小节</th><th>讲授侧重</th></tr></thead><tbody>' + rows.join('') + '</tbody>';
+    '<thead><tr>' +
+      '<th style="width:56px">课时</th>' +
+      '<th style="width:30%">章节</th>' +
+      '<th>内容</th>' +
+      '<th style="width:32%">内容概括</th>' +
+      '<th style="width:86px"></th>' +
+    '</tr></thead><tbody>' +
+    LECTURES.map(function (lec) {
+      return '<tr>' +
+        '<td class="ch-no">' + String(lec.no).padStart(2, '0') + '</td>' +
+        '<td style="font-weight:600">' + esc(lec.title) + '</td>' +
+        '<td style="font-size:.86rem">' + esc(lec.sections.join('、')) + '</td>' +
+        '<td style="font-size:.86rem;color:var(--ink-2)">' + esc(lec.summary) + '</td>' +
+        '<td style="text-align:right;white-space:nowrap">' +
+          '<button type="button" class="btn btn-sm" data-file="' + esc(lec.file) + '">看课件</button>' +
+        '</td>' +
+      '</tr>';
+    }).join('') +
+    '</tbody>';
+
+  document.getElementById('plan16').addEventListener('click', function (e) {
+    const btn = e.target.closest('[data-file]');
+    if (!btn) return;
+    show(btn.dataset.file);
+    const viewer = document.querySelector('.lec-viewer');
+    if (viewer) viewer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  /* ---- 一进视口才载入第 1 课时：2.7 MB 的 PDF 不该和正文一起抢带宽 ---- */
+  const box = document.getElementById('lec-frame-box');
+  if (box && LECTURES.length) {
+    const io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting || current) return;
+        show(LECTURES[0].file);
+        io.disconnect();
+      });
+    }, { rootMargin: '300px 0px' });
+    io.observe(box);
+  }
 })();
 </script>
 </body>

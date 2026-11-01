@@ -12,8 +12,24 @@
   const PDFJS_SRC = PDFJS_BASE + 'legacy/build/pdf.min.js';
   const PDFJS_WORKER = PDFJS_BASE + 'legacy/build/pdf.worker.min.js';
 
-  const PDF_NAME = 'gpt.pdf';
-  const PDF_MIRROR = 'https://raw.githubusercontent.com/token-to-llm/token-to-llm/main/ppt/' + PDF_NAME;
+  /* 课件按 16 课时交付，目录见仓库 ppt_16/。条目数据集中在 ppt16.js（window.PPT16），
+     这里不再写死某一个文件名：阅读器按当前课时切换 PDF。 */
+  const PPT_DIR = 'ppt_16/';
+  const DEFAULT_FILE = 'llm.pdf';
+
+  function lectures() {
+    return (window.PPT16 && window.PPT16.lectures) || [];
+  }
+
+  function lectureOf(file) {
+    const list = lectures();
+    for (let i = 0; i < list.length; i++) if (list[i].file === file) return list[i];
+    return null;
+  }
+
+  function mirrorOf(file) {
+    return 'https://raw.githubusercontent.com/token-to-llm/token-to-llm/main/' + PPT_DIR + file;
+  }
 
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
@@ -21,23 +37,20 @@
     });
   }
 
-  function pdfUrlList() {
+  function pdfUrlList(file) {
     const list = [];
     const base = window.SITE && window.SITE.ppt && window.SITE.ppt.base;
-    if (base) list.push(base + PDF_NAME);
-    if (list.indexOf(PDF_MIRROR) === -1) list.push(PDF_MIRROR);
+    if (base) list.push(base + file);
+    const mirror = mirrorOf(file);
+    if (list.indexOf(mirror) === -1) list.push(mirror);
     return list;
   }
 
-  /* 从 CHAPTERS 按文件名反查课件标题，查不到就用兜底文案 */
-  function pdfTitle() {
-    const list = window.CHAPTERS || [];
-    for (let i = 0; i < list.length; i++) {
-      if (list[i] && list[i].ppt === PDF_NAME) {
-        return '第 ' + list[i].n + ' 章 · ' + list[i].title;
-      }
-    }
-    return '配套课件 · ' + PDF_NAME;
+  /* 标题取自 ppt16.js 的课时名；查不到就用文件名兜底 */
+  function pdfTitle(file) {
+    const lec = lectureOf(file);
+    if (lec) return '第 ' + lec.no + ' 课时 · ' + lec.title;
+    return '配套课件 · ' + file;
   }
 
   /* 站点里已有 #lightbox 就复用（只借 DOM，不依赖 index.html 那边的委托是否还在），
@@ -176,6 +189,34 @@
     sync();
   }
 
+  /* 课时选择条：16 条按章分组，一条对应一份 PDF。
+     放在阅读器上方而不是塞进阅读器里，翻页控件与选课控件各管各的，
+     窄屏下也只需要纵向堆叠，不用给阅读器再挤出一行。 */
+  function lecturesHtml() {
+    const list = lectures();
+    if (!list.length) return '';
+    let group = '';
+    const rows = list.map(function (lec, i) {
+      /* 同章的两讲（上/下）共用一个分组标题 */
+      let head = '';
+      if (lec.chapter !== group) {
+        group = lec.chapter;
+        head = '<span class="sp-lecture-ch">第 ' + group + ' 章</span>';
+      }
+      return head +
+        '<button type="button" class="sp-lecture' +
+          (i === 0 ? ' is-active' : '') + '" data-file="' + esc(lec.file) + '"' +
+          (i === 0 ? ' aria-current="true"' : '') +
+          ' title="' + esc(lec.title) + '">' +
+          '<span class="sp-lecture-no">' + lec.no + '</span>' +
+          '<span class="sp-lecture-name">' + esc(lec.short) + '</span>' +
+        '</button>';
+    }).join('');
+
+    return '<div class="sp-lectures" data-lectures aria-label="选择课时">' + rows + '</div>' +
+      '<p class="sp-lecture-now">' + esc(pdfTitle(DEFAULT_FILE)) + '</p>';
+  }
+
   /* 卡片里只出现课件本身：没有工具条、没有下载入口、也没有滚动条。课件是 16:9
      横向页面，连续滚动只会在卡片里堆出几道看不清的横条，一屏一页更像放映。 */
   function viewerHtml(title) {
@@ -239,10 +280,36 @@
     let curPage = 1;
     let started = false;
     let renderTask = null;
+    let currentFile = '';   // 当前要显示的课时 PDF
+    let loadedFile = '';    // 已经解析成功的那一份
 
     const thumbEls = [];
     let thumbIO = null;
     let resizeTimer = 0;
+    let boundLayout = false;  // resize/ResizeObserver 只绑一次，切换课时不重复绑
+
+    /* 换课时：把上一份文档和画布清干净，避免旧页残留、旧任务回来覆盖新页 */
+    function resetFor(file) {
+      if (renderTask) {
+        try { renderTask.cancel(); } catch (e) { /* 已结束的任务取消会抛，忽略 */ }
+        renderTask = null;
+      }
+      if (thumbIO) { thumbIO.disconnect(); thumbIO = null; }
+      if (pdfDoc && pdfDoc.destroy) {
+        try { pdfDoc.destroy(); } catch (e) { /* 已销毁 */ }
+      }
+      pdfDoc = null;
+      numPages = 0;
+      curPage = 1;
+      epoch++;
+      thumbEls.length = 0;
+      if (thumbsEl) thumbsEl.innerHTML = '';
+      if (pageEl) pageEl.classList.remove('is-ready');
+      if (canvas) { canvas.width = 0; canvas.height = 0; }
+      if (prevBtn) prevBtn.disabled = true;
+      if (nextBtn) nextBtn.disabled = true;
+      currentFile = file || '';
+    }
 
     function setState(mode) {
       phase = mode;
@@ -484,9 +551,12 @@
       return (bytes / 1048576).toFixed(1) + ' MB';
     }
 
-    async function start() {
-      if (started) return;
+    async function start(file) {
+      const target = file || currentFile || DEFAULT_FILE;
+      if (started && target === loadedFile) return;
+      if (started && target !== loadedFile) resetFor(file);
       started = true;
+      currentFile = target;
 
       setState('loading');
       setProgress(null);
@@ -509,7 +579,7 @@
 
       let bytes = null;
       let lastErr = null;
-      const urls = pdfUrlList();
+      const urls = pdfUrlList(target);
 
       for (let i = 0; i < urls.length; i++) {
         setProgress(0);
@@ -563,10 +633,14 @@
       curPage = 1;
       highlight(1);
       updateArrows();
+      loadedFile = target;
 
-      window.addEventListener('resize', scheduleLayout);
-      if (window.ResizeObserver) {
-        new ResizeObserver(scheduleLayout).observe(stage);
+      if (!boundLayout) {
+        boundLayout = true;
+        window.addEventListener('resize', scheduleLayout);
+        if (window.ResizeObserver) {
+          new ResizeObserver(scheduleLayout).observe(stage);
+        }
       }
     }
 
@@ -595,28 +669,13 @@
     if (retry) {
       retry.addEventListener('click', function () {
         started = false;
-        if (renderTask) {
-          try { renderTask.cancel(); } catch (e) { /* 已结束 */ }
-          renderTask = null;
-        }
-        if (pdfDoc && pdfDoc.destroy) {
-          try { pdfDoc.destroy(); } catch (e) { /* 已销毁 */ }
-        }
-        pdfDoc = null;
-        numPages = 0;
-        epoch++;
-        curPage = 1;
-        thumbEls.length = 0;
-        thumbsEl.innerHTML = '';
-        pageEl.classList.remove('is-ready');
-        if (canvas) { canvas.width = 0; canvas.height = 0; }
-        if (prevBtn) prevBtn.disabled = true;
-        if (nextBtn) nextBtn.disabled = true;
-        start();
+        loadedFile = '';
+        resetFor(currentFile);
+        start(currentFile);
       });
     }
 
-    return { start: start };
+    return { start: start, reset: resetFor };
   }
 
   function mount(host) {
@@ -633,7 +692,8 @@
       '<div class="sp-grid" id="sp-grid" data-grid></div>' +
       '</div>' +
       '<div class="sp-panel" id="sp-panel-pdf" role="tabpanel" aria-labelledby="sp-tab-pdf" hidden>' +
-      viewerHtml(pdfTitle()) +
+      lecturesHtml() +
+      viewerHtml(pdfTitle(DEFAULT_FILE)) +
       '</div>';
 
     const tabs = host.querySelectorAll('.sp-tab');
@@ -643,6 +703,28 @@
     buildGallery(host.querySelector('[data-grid]'));
 
     const viewer = setupPdf(panelPdf);
+    let activeFile = DEFAULT_FILE;
+
+    /* 课时选择：16 个课时按章分组，点一条就换一份 PDF。
+       只换文件、不重新挂载阅读器，pdf.js 也只在第一次切到 PDF tab 时才载入。 */
+    const picker = panelPdf.querySelector('[data-lectures]');
+    if (picker) {
+      picker.addEventListener('click', function (e) {
+        const btn = e.target.closest('[data-file]');
+        if (!btn) return;
+        const file = btn.dataset.file;
+        if (!file || file === activeFile) return;
+        activeFile = file;
+        picker.querySelectorAll('[data-file]').forEach(function (b) {
+          const on = b.dataset.file === file;
+          b.classList.toggle('is-active', on);
+          b.setAttribute('aria-current', on ? 'true' : 'false');
+        });
+        const cap = panelPdf.querySelector('.sp-lecture-now');
+        if (cap) cap.textContent = pdfTitle(file);
+        viewer.start(file);
+      });
+    }
 
     function activate(which) {
       tabs.forEach(function (t) {
@@ -654,7 +736,7 @@
       panelImg.hidden = which !== 'img';
       panelPdf.hidden = which !== 'pdf';
       /* 懒加载的唯一触发点：第一次切到 PDF 才开始下载 */
-      if (which === 'pdf') viewer.start();
+      if (which === 'pdf') viewer.start(activeFile);
     }
 
     tabs.forEach(function (t, i) {

@@ -151,12 +151,6 @@ hr {
   margin-bottom: 44px;
 }
 
-.section-head.is-center {
-  margin-left: auto;
-  margin-right: auto;
-  text-align: center;
-}
-
 .eyebrow {
   display: inline-block;
   font-family: var(--sans);
@@ -525,20 +519,6 @@ hr {
   gap: 12px;
 }
 
-.hero-meta {
-  margin-top: 30px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 26px;
-  font-size: 0.85rem;
-  color: var(--ink-3);
-}
-
-.hero-meta b {
-  color: var(--ink-2);
-  font-weight: 600;
-}
-
 .hero-art {
   position: relative;
   display: flex;
@@ -549,40 +529,6 @@ hr {
   width: 100%;
   max-width: 340px;
   filter: drop-shadow(0 18px 36px rgba(31, 35, 48, 0.16));
-}
-
-/* ---------- 8. 统计条 ---------- */
-.stats {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-  background: var(--paper-2);
-}
-
-.stats .stat {
-  padding: 26px 20px;
-  text-align: center;
-  border-right: 1px solid var(--line);
-}
-
-.stats .stat:last-child {
-  border-right: 0;
-}
-
-.stat-num {
-  font-family: var(--serif);
-  font-size: 1.9rem;
-  font-weight: 700;
-  color: var(--primary);
-  line-height: 1.1;
-  letter-spacing: -0.01em;
-}
-
-.stat-label {
-  font-size: 0.83rem;
-  color: var(--ink-3);
-  margin-top: 6px;
 }
 
 /* ---------- 9. 卡片 ---------- */
@@ -615,17 +561,6 @@ hr {
 .card:hover {
   border-color: var(--line-strong);
   box-shadow: var(--shadow);
-}
-
-.card-link {
-  display: block;
-  color: inherit;
-}
-
-.card-link:hover {
-  color: inherit;
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
 }
 
 .card h3 {
@@ -698,15 +633,150 @@ hr {
   width: 68px;
 }
 
-.chapter-table .ch-name {
-  font-weight: 600;
-  color: var(--ink);
+/* ---------- 课时安排：课时选择条 + 页内 PDF 预览 ----------
+   选择条与分配表共用一套按钮，点哪条都把 PDF 换到下方 iframe 里。
+   选择条横向滚动而不换行：16 条铺成四行会把预览框推到屏幕外。 */
+.lec-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 18px 0 16px;
+}
+
+.lec-ch {
+  flex: none;
+  align-self: center;
+  margin-left: 10px;
+  padding-left: 12px;
+  border-left: 1px solid var(--line-strong);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
   white-space: nowrap;
 }
 
-.chapter-table .ch-sec {
-  font-size: 0.86rem;
-  line-height: 1.7;
+.lec-picker .lec-ch:first-child {
+  margin-left: 0;
+  padding-left: 0;
+  border-left: 0;
+}
+
+.lec-btn {
+  appearance: none;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 11px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--paper);
+  color: var(--ink-2);
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.lec-btn:hover {
+  color: var(--ink);
+  background: var(--paper-2);
+  border-color: var(--line-strong);
+}
+
+.lec-btn.is-active,
+.lec-btn.is-active:hover {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+.lec-no {
+  font-variant-numeric: tabular-nums;
+  opacity: 0.72;
+}
+
+.lec-btn.is-active .lec-no {
+  opacity: 0.85;
+}
+
+.lec-viewer {
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--paper);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.lec-frame-box {
+  position: relative;
+  background: var(--paper-2);
+  height: clamp(420px, 68vh, 760px);
+}
+
+.lec-frame-box iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.lec-placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--ink-3);
+  font-size: 0.9rem;
+}
+
+.lec-cap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 11px 18px;
+  border-top: 1px solid var(--line);
+  background: var(--paper-2);
+  font-size: 0.84rem;
+  color: var(--ink-2);
+}
+
+.lec-cap a {
+  font-weight: 600;
+}
+
+/* 分配表最后一列是“看课件”按钮，行高被按钮撑开一点，留出上边距对齐 */
+.lec-table td .btn {
+  margin-top: -2px;
+}
+
+@media (max-width: 700px) {
+  .lec-picker {
+    gap: 5px;
+  }
+  .lec-btn {
+    height: 28px;
+    padding: 0 9px;
+    font-size: 0.76rem;
+  }
+  .lec-ch {
+    margin-left: 6px;
+    padding-left: 8px;
+  }
+  .lec-frame-box {
+    height: clamp(360px, 58vh, 520px);
+  }
+  .lec-cap {
+    font-size: 0.8rem;
+  }
 }
 
 /* ---------- 11. 文档布局 ----------
@@ -1557,13 +1627,6 @@ hr {
   pointer-events: none;
 }
 
-/* ---------- 17. 作者 ---------- */
-.author-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 22px;
-}
-
 .author-card {
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -1629,15 +1692,6 @@ hr {
   flex-wrap: wrap;
   gap: 6px 14px;
   font-size: 0.84rem;
-}
-
-/* 联系方式：两张卡之外只放一个入口，不重复 */
-/* 只剩一个“联系方式”按钮，靠左收在作者卡下方：不加虚线框、不加底衬，
-   按钮自己就是一个干净的方块，没必要再套一层容器。 */
-.author-contact {
-  display: flex;
-  justify-content: flex-start;
-  margin-top: 24px;
 }
 
 /* ---------- 19b. 标题打字机 + 浮动按钮 ---------- */
@@ -1844,13 +1898,6 @@ hr {
 }
 
 /* ---------- 19. 通用小件 ---------- */
-.tag-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 14px;
-}
-
 .kv {
   display: grid;
   grid-template-columns: 96px minmax(0, 1fr);
@@ -2303,45 +2350,7 @@ pre.is-plain code {
   color: var(--ink-2);
 }
 
-.fold-foot {
-  padding: 10px 20px 14px;
-  border-top: 1px solid var(--line);
-  background: var(--paper-2);
-  font-size: 0.82rem;
-}
-
-.fold-foot a {
-  color: var(--primary);
-}
-
 /* ---------- 22. 写法折叠 ---------- */
-.writing-list {
-  display: grid;
-  gap: 16px;
-}
-
-.writing-item {
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--paper);
-  overflow: hidden;
-}
-
-.writing-item summary {
-  padding: 26px 30px;
-  cursor: pointer;
-  list-style: none;
-  position: relative;
-}
-
-.writing-item summary::-webkit-details-marker {
-  display: none;
-}
-
-.writing-item summary:hover {
-  background: var(--tint-primary);
-}
-
 .writing-tag {
   display: inline-block;
   font-size: 0.74rem;
@@ -2353,36 +2362,12 @@ pre.is-plain code {
   margin-bottom: 12px;
 }
 
-.writing-item h3 {
-  font-family: var(--serif);
-  font-size: 1.22rem;
-  margin: 0 0 8px;
-  color: var(--ink);
-  padding-right: 36px;
-  line-height: 1.5;
-}
-
 .writing-lead {
   margin: 0;
   font-size: 0.92rem;
   color: var(--ink-2);
   line-height: 1.75;
   padding-right: 36px;
-}
-
-.writing-item summary::after {
-  content: "+";
-  position: absolute;
-  top: 24px;
-  right: 28px;
-  font-size: 1.5rem;
-  line-height: 1;
-  color: var(--ink-3);
-  font-weight: 300;
-}
-
-.writing-item[open] summary::after {
-  content: "−";
 }
 
 .writing-body {
@@ -2504,59 +2489,6 @@ pre.is-plain code {
   width: 100%;
   height: auto;
   margin: 0;
-}
-
-/* ---------- 24. 课件墙 ---------- */
-/* 3×4：十二页正好四行，每格同宽同高，缩略图统一按 16:9 裁切，标题行不再参差 */
-.ppt-wall {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-}
-
-.ppt-tile {
-  margin: 0;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  background: var(--paper);
-  cursor: zoom-in;
-  display: flex;
-  flex-direction: column;
-  transition: border-color 0.18s ease, transform 0.18s ease,
-    box-shadow 0.18s ease;
-}
-
-.ppt-tile:hover,
-.ppt-tile:focus-visible {
-  border-color: var(--tint-primary-strong);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow);
-  outline: none;
-}
-
-.ppt-tile img {
-  display: block;
-  width: 100%;
-  height: auto;
-  margin: 0;
-  border: 0;
-  border-radius: 0;
-  background: var(--paper-2);
-  aspect-ratio: 16 / 9;
-  object-fit: contain;
-}
-
-.ppt-tile figcaption {
-  margin-top: auto;
-  font-size: 0.78rem;
-  color: var(--ink-3);
-  padding: 9px 12px;
-  border-top: 1px solid var(--line);
-  background: var(--paper-2);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 /* ---------- 25. 代码运行示例 ---------- */
@@ -2945,33 +2877,27 @@ body.is-locked {
     white-space: normal;
   }
   .hero {
-    padding: 56px 0 48px;
+    padding: 40px 0 36px;
   }
   .hero-grid {
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 20px;
+    justify-items: start;
   }
+  /* 封面在窄屏退成一条小图，靠左而不是居中：居中的话它两侧的空白会把
+     Banner 撑到近 1000px，标题被挤到一屏之外，作者条更看不见了。 */
   .hero-art {
     order: -1;
+    justify-content: flex-start;
   }
   .hero-art img {
-    max-width: 210px;
-  }
-  .stats {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .stats .stat:nth-child(2) {
-    border-right: 0;
-  }
-  .stats .stat:nth-child(n + 3) {
-    border-top: 1px solid var(--line);
+    max-width: 132px;
   }
   /* minmax(0, 1fr) 而非 1fr：后者的隐式最小值是 max-content，
      里面的 <pre> 会把整列撑到最长行宽，窄屏必然横向溢出 */
   .grid-2,
   .grid-3,
   .grid-4,
-  .author-grid,
   .people-grid,
   .buy-grid,
   .contact-grid,
@@ -3061,9 +2987,6 @@ body.is-locked {
   .shop-grid {
     grid-template-columns: minmax(0, 1fr);
   }
-  .ppt-wall {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
   .sample-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -3103,23 +3026,8 @@ body.is-locked {
     margin-left: 0;
     margin-right: 0;
   }
-  .writing-item summary {
-    padding: 22px 22px;
-  }
   .writing-body {
     padding: 4px 22px 24px;
-  }
-}
-
-/* 手机端：三张课程卡片一律收起。
-   桌面首屏会把第一张卡展开当“样板”，但窄屏下展开那张有近 2000px 高，
-   后续两张卡直接被推到几屏之外，读者要先划过一整篇才看得到目录。 */
-@media (max-width: 700px) {
-  .writing-item > .writing-body {
-    display: none;
-  }
-  .writing-item[open] > .writing-body {
-    display: block;
   }
 }
 
@@ -3134,9 +3042,6 @@ body.is-locked {
 }
 
 @media (max-width: 560px) {
-  .chapter-table .ch-sec {
-    display: none;
-  }
   .author-card {
     flex-direction: column;
     gap: 14px;
@@ -3171,4 +3076,659 @@ body.is-locked {
   .lightbox-inner img {
     max-height: calc(100vh - 110px);
   }
+}
+
+/* ---------- 26. 主页改版：页面目录 / 书本框架 / 推荐辞平铺 / 配套课件 ---------- */
+
+/* 26a. Banner 上的作者标记：比 hero-meta 高一级，首屏第一眼就能读到 */
+.hero-authors {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0 12px;
+  margin: 22px 0 0;
+  font-size: 1.16rem;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.hero-authors-label {
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--primary);
+  border: 1px solid var(--tint-primary-strong);
+  background: var(--tint-primary);
+  border-radius: var(--radius-pill);
+  padding: 2px 10px;
+  transform: translateY(-2px);
+}
+
+.hero-authors b {
+  font-family: var(--serif);
+  font-size: 1.24rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.hero-authors i {
+  font-style: normal;
+  color: var(--ink-3);
+}
+
+/* 首屏高度：Banner 留足上下留白，左栏六行元素之间不再挤在一起。
+   作者卡仍在第一屏内（1440×900 下 author-strip 顶边约 700px）。 */
+.hero {
+  padding: 84px 0 76px;
+}
+
+.hero h1 {
+  font-size: clamp(1.9rem, 3.4vw, 2.6rem);
+}
+
+.hero-art img {
+  max-width: 300px;
+}
+
+/* Banner 左栏重排后的节奏：
+   eyebrow → 书名 → 作者 → 副标题 → 按钮 → 标签。
+   标签挪到按钮之后，作为“这本书的附加说明”，不再和主行动抢位置；
+   原 hero-meta（出版 / ISBN / 配套）已删除，首屏不再出现一串灰字。 */
+.hero-tags {
+  margin: 22px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* 作者条：Banner 之下，两行紧凑列表；长介绍不进首屏 */
+.author-card .author-note {
+  font-size: 0.84rem;
+  color: var(--ink-3);
+}
+
+#authors.section--tight {
+  padding: 40px 0 44px;
+}
+
+#authors .avatar {
+  width: 64px;
+  height: 64px;
+}
+
+#authors .author-card {
+  padding: 20px 22px;
+  gap: 16px;
+}
+
+#authors .author-card p {
+  margin-bottom: 8px;
+}
+
+/* 26b. 通用 tab（书本框架、知识点精读共用） */
+.tabs {
+  margin-top: 8px;
+}
+
+.tab-list {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px;
+  margin-bottom: 22px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-sm);
+}
+
+.tab {
+  appearance: none;
+  height: 34px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--ink-2);
+  font-family: var(--sans);
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.tab:hover {
+  color: var(--ink);
+  background: var(--paper-2);
+}
+
+.tab.is-active,
+.tab.is-active:hover {
+  background: var(--primary);
+  color: #fff;
+}
+
+.tab-panel[hidden] {
+  display: none;
+}
+
+.tab-lead {
+  color: var(--ink-2);
+  font-size: 0.96rem;
+  max-width: 62em;
+  margin-bottom: 22px;
+}
+
+.tab-actions {
+  margin-top: 26px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* section--tint 里的 tab 需要白底，不然和背景糊在一起 */
+.section--tint .tab-list {
+  background: var(--paper);
+  border-color: var(--line-strong);
+}
+
+/* 26c. 课件精讲：精读样本标记
+   原来这一节是“配套课件”里的 Part A，现在独立成节、用自己的 section-head，
+   Part 分隔线随之取消；只留下这枚红色标记，挂在标题段落下。 */
+.part-pin {
+  display: inline-block;
+  margin-top: 14px;
+  font-family: var(--sans);
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--accent-ink);
+  background: var(--tint-accent);
+  border: 1px solid #f7d8ce;
+  border-radius: var(--radius-pill);
+  padding: 2px 10px;
+  white-space: nowrap;
+}
+
+/* 知识点 tab 的面板内部排版
+   外观沿用重构前的卡片外形（白底、1px 边框、26/30 内边距），
+   只是折叠控件换成了上方 tab：面板自己就是那张卡。 */
+.writing-panel {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--paper);
+  overflow: hidden;
+}
+
+.writing-head {
+  padding: 26px 30px 22px;
+}
+
+.writing-panel .writing-tag {
+  margin-bottom: 12px;
+}
+
+.writing-title {
+  font-family: var(--serif);
+  font-size: 1.22rem;
+  line-height: 1.5;
+  margin: 0 0 8px;
+  padding-right: 0;
+  color: var(--ink);
+}
+
+.writing-panel .writing-lead {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--ink-2);
+  line-height: 1.75;
+}
+
+.writing-panel .writing-body {
+  padding: 6px 30px 28px;
+  border-top: 1px solid var(--line);
+}
+
+.writing-panel .writing-body p:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 900px) {
+  .writing-head {
+    padding: 22px 22px 18px;
+  }
+  .writing-panel .writing-body {
+    padding: 4px 22px 24px;
+  }
+}
+
+/* 26d. 推荐辞：3×2 平铺，整段展示，不折叠不滑动 */
+.quote-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+/* 覆盖旧轮播卡片的等高/定宽约束，改成随内容自然高 */
+.quote-grid .quote-card {
+  height: 100%;
+  grid-auto-columns: auto;
+  scroll-snap-align: none;
+}
+
+/* 同一行卡片等高之外，头部块统一最小高度：
+   头衔 1 行与 3 行的卡，评语起点仍然对齐。 */
+.quote-grid .quote-by {
+  min-height: 76px;
+}
+
+.quote-avatar {
+  width: 52px;
+  height: 52px;
+  flex: none;
+  border-radius: 50%;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: var(--qa-bg, var(--tint-primary));
+  color: var(--qa-fg, var(--primary));
+  border: 1px solid var(--line);
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  font-weight: 700;
+  position: relative;
+}
+
+.quote-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: relative;
+  z-index: 1;
+}
+
+/* 有真图时把占位字压在下面，免得边缘透出来 */
+.quote-avatar b {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+}
+
+.quote-avatar.is-fallback b,
+.quote-avatar:not(.has-img) b {
+  position: static;
+}
+
+/* 姓名 / 头衔与头像在顶部对齐，而不是垂直居中：
+   六张卡的头衔行数不同（1–3 行），一旦居中对齐，头像会被推上推下，
+   并排时六个圆圈高高低低。改成 align-items:flex-start 后，所有头像的
+   上边缘都锁在同一水平线上。 */
+.quote-grid .quote-by {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 12px;
+  padding-top: 0;
+  margin-bottom: 14px;
+}
+
+.quote-id {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  /* 头衔最多三行，名字首行与头像上沿齐平 */
+  padding-top: 2px;
+}
+
+.quote-id b {
+  font-size: 0.98rem;
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+.quote-id .quote-role {
+  font-size: 0.78rem;
+  color: var(--ink-3);
+  line-height: 1.55;
+  /* 固定两行高：即便某位头衔只有一行，卡片的正文起点也保持一致 */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.quote-grid .quote-text {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.85;
+  color: var(--ink-2);
+}
+
+.quote-grid .quote-card::before {
+  top: 44px;
+  left: auto;
+  right: 22px;
+  font-size: 2.6rem;
+  opacity: 0.5;
+}
+
+@media (max-width: 1080px) {
+  .quote-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .quote-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .tab-list {
+    display: flex;
+    width: 100%;
+  }
+  .tab {
+    flex: 1;
+    padding: 0 10px;
+    font-size: 0.84rem;
+  }
+  .hero {
+    padding: 40px 0 36px;
+  }
+  /* 窄屏首屏：封面不占整屏高度 */
+  .hero-art img {
+    max-width: 160px;
+  }
+  .hero-authors {
+    font-size: 1.04rem;
+    margin-top: 16px;
+  }
+  .hero-authors b {
+    font-size: 1.1rem;
+  }
+  #authors.section--tight {
+    padding: 28px 0 32px;
+  }
+}
+
+@media (max-width: 560px) {
+  /* 窄屏作者卡改成两行紧凑列表：头像与姓名并排，简介折行在下 */
+  #authors .author-card {
+    flex-direction: row;
+    padding: 16px;
+  }
+  #authors .author-card p {
+    font-size: 0.84rem;
+  }
+}
+
+/* 26e. 页面目录：桌面左侧、垂直居中 / 窄屏底部抽屉
+   放左侧并垂直居中：右边留给正文阅读，左边这条竖线与首屏大字标题同侧，
+   扫视路径更短。不再显示“本页目录”标签——条目本身就能说明它是什么。 */
+.page-toc {
+  position: fixed;
+  top: 50%;
+  left: 24px;
+  transform: translateY(-50%);
+  width: 150px;
+  max-height: 70vh;
+  overflow-y: auto;
+  z-index: 55;
+  font-size: 0.82rem;
+  scrollbar-width: thin;
+}
+
+.page-toc-list {
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--line);
+}
+
+.page-toc-list a {
+  display: block;
+  padding: 6px 12px 6px 14px;
+  margin-left: -1px;
+  border-left: 2px solid transparent;
+  color: var(--ink-3);
+  line-height: 1.5;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.page-toc-list a:hover {
+  color: var(--ink);
+}
+
+.page-toc-list a.is-active {
+  color: var(--primary);
+  border-left-color: var(--primary);
+  font-weight: 600;
+}
+
+/* 轨道只在宽屏出现：左侧留 150px + 间距，正文 1160px 仍居中不被压 */
+@media (max-width: 1560px) {
+  .page-toc {
+    display: none;
+  }
+}
+
+.toc-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 54;
+  background: rgba(20, 24, 40, 0.42);
+}
+
+/* 窄屏：页面目录变成从底部升起的抽屉，由右下角按钮打开 */
+@media (max-width: 1560px) {
+  .page-toc.is-open {
+    display: block;
+    top: auto;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    transform: none;
+    width: auto;
+    max-height: 70vh;
+    background: var(--paper);
+    border-radius: 16px 16px 0 0;
+    box-shadow: var(--shadow-lg);
+    padding: 20px var(--gutter) 28px;
+    z-index: 56;
+    overflow-y: auto;
+  }
+  .page-toc.is-open .page-toc-list {
+    border-left: 0;
+  }
+  .page-toc.is-open .page-toc-list a {
+    padding: 11px 0;
+    border-left: 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.96rem;
+  }
+  .page-toc.is-open .page-toc-list a.is-active {
+    border-left: 0;
+    color: var(--primary);
+  }
+  /* 桌面隐藏时按钮不该还在，只在窄屏放出来 */
+  .float-toc-btn {
+    display: grid;
+  }
+}
+
+@media (min-width: 1561px) {
+  .float-toc-btn {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab,
+  .page-toc-list a,
+  .quote-grid .quote-card {
+    transition: none;
+  }
+}
+
+/* 26f. 窄屏 Banner 收口
+   26a 的基础规则写在文件末尾，会盖掉前面 @media (max-width:900px) 里的同名
+   规则（特异性相同、后者胜出）。所以窄屏的覆盖必须也放在末尾，写在这一段之后。 */
+@media (max-width: 900px) {
+  .hero {
+    padding: 36px 0 32px;
+  }
+  .hero-grid {
+    gap: 18px;
+    justify-items: start;
+  }
+  /* 封面靠左缩成一条，不再居中：居中的话两侧空白会把 Banner 撑到近 1000px，
+     标题和作者条全被挤出首屏。 */
+  .hero-art {
+    order: -1;
+    justify-content: flex-start;
+  }
+  .hero-art img {
+    max-width: 130px;
+  }
+}
+
+@media (max-width: 700px) {
+  .hero {
+    padding: 28px 0 26px;
+  }
+  /* 手机端封面居中，并在原 108px 上放大 20%（108 → 130）。
+     居中要写在网格项上：.hero-grid 是 justify-items:start，
+     只改 justify-content 时 .hero-art 只有内容宽，居中看不出来。 */
+  .hero-art {
+    justify-self: center;
+  }
+  .hero-art img {
+    max-width: 130px;
+  }
+  .hero-sub {
+    font-size: 1.02rem;
+  }
+  .hero-actions .btn {
+    flex: 1 1 calc(50% - 6px);
+  }
+  /* 首屏按钮排两行：三个按钮挤一行会把“购买本书”压窄 */
+  .hero-actions {
+    gap: 10px;
+  }
+}
+
+/* 26g. 作者条：两列并排、短小，长介绍收进 <details>
+   目标是 Banner 之下 200px 以内收住，让作者名连同头像一起落在首屏。 */
+#authors.section--tight {
+  padding: 32px 0 36px;
+}
+
+.author-strip {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.author-strip .author-card {
+  padding: 18px 20px;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+#authors .avatar {
+  width: 60px;
+  height: 60px;
+}
+
+.author-strip .author-card h3 {
+  font-size: 1rem;
+  margin-bottom: 0.1em;
+}
+
+.author-strip .author-role {
+  font-size: 0.78rem;
+  margin-bottom: 4px;
+  line-height: 1.5;
+}
+
+.author-strip .author-role--extra {
+  font-size: 0.76rem;
+  color: var(--ink-3);
+  margin-bottom: 8px;
+}
+
+/* 长简介默认收起：首屏只要"是谁、在哪、做什么" */
+.author-more > summary {
+  display: inline-block;
+  list-style: none;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--primary);
+  padding: 2px 0 6px;
+}
+
+.author-more > summary::-webkit-details-marker {
+  display: none;
+}
+
+.author-more > summary::after {
+  content: " +";
+  font-weight: 400;
+}
+
+.author-more[open] > summary::after {
+  content: " −";
+}
+
+.author-more p {
+  font-size: 0.86rem;
+  color: var(--ink-2);
+  line-height: 1.72;
+  margin: 0 0 8px;
+}
+
+.author-more .author-note {
+  font-size: 0.82rem;
+  color: var(--ink-3);
+}
+
+.author-strip .author-links {
+  font-size: 0.8rem;
+  gap: 4px 12px;
+  margin-top: 4px;
+}
+
+@media (max-width: 900px) {
+  .author-strip {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+  #authors.section--tight {
+    padding: 24px 0 28px;
+  }
+}
+
+@media (max-width: 560px) {
+  .author-strip .author-card {
+    padding: 14px 16px;
+    gap: 12px;
+  }
+  #authors .avatar {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+/* 26h. 锚点落点避让顶栏
+   顶栏 64px + 一点余量：目录跳转后标题不该被压在玻璃条下面。 */
+#top,
+#authors,
+#book-frame,
+#quotes,
+#slides,
+#book-content,
+#code,
+#buy {
+  scroll-margin-top: 76px;
 }

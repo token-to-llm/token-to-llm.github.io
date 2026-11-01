@@ -52,29 +52,38 @@
   </div>
 </noscript>
 
-<!-- ============ 1. 主视觉 ============ -->
-<section class="hero">
+<!-- ============ 页面目录（桌面右侧固定轨道 / 窄屏底部抽屉） ============ -->
+<nav class="page-toc" id="page-toc" aria-label="本页目录">
+  <div class="page-toc-list">
+    <a href="#top">首屏</a>
+    <a href="#authors">作者介绍</a>
+    <a href="#book-frame">书本框架</a>
+    <a href="#quotes">推荐辞</a>
+    <a href="#slides">配套课件</a>
+    <a href="#book-content">课件精讲</a>
+    <a href="#code">代码仓库</a>
+    <a href="#buy">购买</a>
+  </div>
+</nav>
+<div class="toc-backdrop" id="toc-backdrop" hidden></div>
+
+<!-- ============ 1. Banner ============ -->
+<section class="hero" id="top">
   <div class="container hero-grid">
     <div>
       <span class="eyebrow">清华大学出版社 · 计算机教材</span>
       <h1>大语言模型：<br>训练、精调与对齐</h1>
+      <p class="hero-authors"><span class="hero-authors-label">作者</span><b>杨耀东</b><i>·</i><b>邓杭</b></p>
       <p class="hero-sub">结合北京大学首门系统讲授大语言模型的课程讲义，用一套完整的体系把公式、伪代码与可运行代码串成同一条路径。</p>
-      <div class="hero-tags">
-        <span class="chip">10 章 · 16 课时</span>
-        <span class="chip">900+ 页课件</span>
-        <span class="chip chip--accent">北大课程讲义</span>
-        <span class="chip">开源代码</span>
-      </div>
       <div class="hero-actions">
-        <a class="btn btn-primary btn-lg" href="#buy">购买本书</a>
+        <a class="btn btn-primary btn-lg" id="hero-buy" href="#buy">购买本书</a>
         <a class="btn btn-lg" href="src/docs/index.html">文档</a>
-        <a class="btn btn-lg" href="https://github.com/token-to-llm/token-to-llm" target="_blank" rel="noopener">token-to-llm 仓库</a>
       </div>
-      <div class="hero-meta">
-        <span><b>作者</b>　杨耀东　邓杭</span>
-        <span><b>出版</b>　清华大学出版社</span>
-        <span><b>ISBN</b>　978-7-302-71036-3</span>
-      </div>
+      <p class="hero-tags">
+        <span class="chip chip--accent">北大课程讲义</span>
+        <span class="chip">10 章 · 16 课时</span>
+        <span class="chip">开源代码与配套课件</span>
+      </p>
     </div>
     <div class="hero-art">
       <img src="src/assets/img/book-3d.webp" alt="《大语言模型：训练、精调与对齐》立体书样" width="498" height="752">
@@ -82,151 +91,14 @@
   </div>
 </section>
 
-<div class="stats">
-  <div class="stat"><div class="stat-num">10</div><div class="stat-label">章 · 16 课时</div></div>
-  <div class="stat"><div class="stat-num">900+</div><div class="stat-label">页教学课件</div></div>
-  <div class="stat"><div class="stat-num">400+</div><div class="stat-label">编号公式</div></div>
-  <div class="stat"><div class="stat-num">337</div><div class="stat-label">篇参考文献</div></div>
-</div>
-
-<!-- ============ 2. 推荐辞 ============ -->
-<section class="section">
-  <div class="container">
-    <div class="section-head is-center">
-      <span class="eyebrow">推荐</span>
-      <h2>北清复交哈联袂推荐</h2>
-    </div>
-    <div class="quote-lead-wrap" id="home-quotes"></div>
-  </div>
-</section>
-
-<!-- ============ 3. 知识体系 ============ -->
-<section class="section section--tint" id="kmap-section">
-  <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">知识体系</span>
-      <h2 id="kmap-title">知识体系：以学习范式、模型与算法、系统实现 3 个维度贯通训练 PT、SFT、RL 三阶段</h2>
-      <p>横向是学习的先后：预训练、微调、对齐；纵向是每本书都要交代的三件事——能力靠什么信号学出来，接到哪套结构与目标上，又如何在硬件上跑得动。</p>
-    </div>
-
-    <div class="kmap">
-      <div class="kmap-flow" id="kmap-stages"></div>
-      <div class="kmap-dims" id="kmap-dims"></div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ 4. 目录（可折叠） ============ -->
-<section class="section">
-  <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">目录</span>
-      <h2>全书十章，逐节列出</h2>
-      <p>第 1—4 章打基础与预训练，第 5—6 章讲微调与应用，第 7—8 章是全书重心的强化学习与对齐，第 9—10 章落到训练与推理系统。点击章节可展开小节。</p>
-    </div>
-
-    <div class="chapter-fold" id="home-chapters"></div>
-
-    <div style="margin-top:28px;display:flex;gap:12px;flex-wrap:wrap">
-      <a class="btn" href="src/docs/chapters.html">完整章节指引</a>
-      <a class="btn" href="src/docs/teaching.html">课时安排</a>
-    </div>
-  </div>
-</section>
-
-<!-- ============ 5. 课本内容 ============ -->
-<section class="section section--tint" id="book-content">
-  <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">课本内容</span>
-      <h2>层层深入，如何讲透一个算法知识点？</h2>
-      <p>多数教材讲一个算法，止步于“它是什么、有什么好处”。本书从问题动机出发，落到定义，再把“为什么非要这样写”推成可验算的式子，最后给出实现上的取舍。下面三个例子取自不同章节，走的是同一条路：<b>问题动机 → 定义出发 → 算法推导 → 实现技巧</b>。点击标题展开。</p>
-    </div>
-
-    <div class="writing-list" id="home-writing"></div>
-  </div>
-</section>
-
-<!-- ============ 6. 书页样张 ============ -->
-<section class="section">
-  <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">书页样张</span>
-      <h2>样张：公式、算法框、表格与代码的版面</h2>
-      <p>六页样张取自书稿，覆盖公式推导、算法框、表格、代码与图示。点击任意一页可放大查看。</p>
-    </div>
-    <div class="sample-grid" id="home-samples"></div>
-  </div>
-</section>
-
-<!-- ============ 7. 配套资源 ============ -->
-<section class="section section--tint">
-  <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">配套资源</span>
-      <h2>完整代码与运行示例</h2>
-    </div>
-    <div class="grid grid-2">
-      <a class="card card-link" href="https://github.com/token-to-llm/token-to-llm" target="_blank" rel="noopener">
-        <h3>开源代码仓库</h3>
-        <p>仓库按章组织，<code>src/</code> 下每个 <code>.py</code> 对应书中一处算法或一幅插图；仅依赖 PyTorch 与 Matplotlib，无需额外环境。</p>
-        <div class="tag-row"><span class="chip">PyTorch</span><span class="chip">逐章可运行</span><span class="chip">开源</span></div>
-      </a>
-      <a class="card card-link" href="src/docs/chapters.html">
-        <h3>教学课件</h3>
-        <p>十章各一套 PDF 课件，合计 900+ 页，覆盖从宏观结构到单条公式。公式与插图均按教材原文核对。</p>
-        <div class="tag-row"><span class="chip">16:9 PDF</span><span class="chip">离线可用</span><span class="chip">逐章分发</span></div>
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- ============ 8. 代码仓库 ============ -->
-<section class="section">
-  <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">代码</span>
-      <h2>代码仓库：<a href="https://github.com/token-to-llm/token-to-llm" target="_blank" rel="noopener" class="title-link">token-to-llm</a></h2>
-      <p>每个脚本都对应书里一处算法或一幅插图，下面的输出来自真实运行。运行方式与完整说明按知识点分成六页，见运行示例。</p>
-    </div>
-
-    <div class="code-grid" id="home-code"></div>
-
-    <div style="margin-top:28px;display:flex;gap:12px;flex-wrap:wrap">
-      <a class="btn" href="src/docs/examples.html">运行示例索引</a>
-      <a class="btn" href="https://github.com/token-to-llm/token-to-llm" target="_blank" rel="noopener">在 GitHub 打开 token-to-llm</a>
-    </div>
-  </div>
-</section>
-
-<!-- ============ 9. 课件墙 ============ -->
-<section class="section section--tint">
-  <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">教学课件</span>
-      <h2>配套课件（部分）</h2>
-      <p>与教材章节一一对应，16:9 PDF，无动画，离线可用。可以先翻图片预览，也可以直接在页内翻整本 PDF。</p>
-    </div>
-
-    <!-- 由 src/assets/js/slides-panel.js 接管：图片预览 / PDF 浏览 两个 tab。
-         容器不再带 .ppt-wall —— 网格由面板自己排，外层只做挂载点。 -->
-    <div id="home-ppt"></div>
-
-    <div style="margin-top:28px;display:flex;gap:12px;flex-wrap:wrap">
-      <a class="btn" href="src/docs/chapters.html">全部十章课件</a>
-      <a class="btn" href="https://github.com/token-to-llm/token-to-llm" target="_blank" rel="noopener">在 token-to-llm 查看</a>
-    </div>
-  </div>
-</section>
-
-<!-- ============ 10. 作者 ============ -->
-<section class="section">
+<!-- ============ 2. 作者介绍（紧随 Banner，首屏可见） ============ -->
+<section class="section section--tight" id="authors">
   <div class="container">
     <div class="section-head">
       <span class="eyebrow">作者</span>
       <h2>作者介绍</h2>
     </div>
-    <div class="author-grid">
+    <div class="author-strip">
       <article class="author-card">
         <div class="avatar"><img src="src/assets/img/author-yang.webp" alt="杨耀东" width="144" height="144" loading="lazy"></div>
         <div>
@@ -234,7 +106,7 @@
           <div class="author-role">北京大学人工智能研究院研究员（博雅学者）· 博士生导师</div>
           <div class="author-role author-role--extra">灵初智能有限公司联合创始人兼首席科学家</div>
           <p>长期从事强化学习与对齐研究，代表性成果包括 PKU-Beaver、BeaverTails、Safe RLHF、Aligner 与 OmniSafe。大模型对齐综述提出 RICE 原则；论文《Language Models Resist Alignment》获 ACL 2025 最佳论文奖。自 2022 年起位列 CSRankings 北京大学 AI/ML 方向学者首位。</p>
-          <p style="font-size:.84rem;color:var(--ink-3)">在北京大学开设首门系统讲授大语言模型的课程《大语言模型基础与对齐》，获北京大学教学成果奖二等奖。</p>
+          <p class="author-note">在北京大学开设首门系统讲授大语言模型的课程《大语言模型基础与对齐》，获北京大学教学成果奖二等奖。</p>
           <div class="author-links">
             <a href="https://www.yangyaodong.com/" target="_blank" rel="noopener">个人主页</a>
             <a href="mailto:yaodong.yang@pku.edu.cn">yaodong.yang@pku.edu.cn</a>
@@ -250,20 +122,122 @@
           <div class="author-links">
             <a href="https://github.com/dhcode-cpp" target="_blank" rel="noopener">GitHub</a>
             <a href="mailto:dhcode95@gmail.com">dhcode95@gmail.com</a>
+            <a href="src/contact/index.html">联系方式</a>
           </div>
         </div>
       </article>
     </div>
+  </div>
+</section>
 
-    <!-- 联系方式只留一个入口，放在两张卡之外：卡内重复两次反而让读者要多找一次 -->
-    <div class="author-contact">
-      <a class="btn btn-sm" href="src/contact/index.html">联系方式</a>
+<!-- ============ 3. 书本框架（知识体系 + 全书目录 + 书页样张） ============ -->
+<section class="section section--tint" id="book-frame">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">书本框架</span>
+      <h2>围绕大模型算法展开的知识脉络</h2>
+    </div>
+
+    <div class="tabs" id="book-tabs">
+      <div class="tab-list" role="tablist" aria-label="书本框架视图">
+        <button class="tab is-active" type="button" role="tab" id="tab-kmap" aria-selected="true" aria-controls="panel-kmap" data-tab="kmap">知识体系</button>
+        <button class="tab" type="button" role="tab" id="tab-dir" aria-selected="false" aria-controls="panel-dir" tabindex="-1" data-tab="dir">全书目录</button>
+        <button class="tab" type="button" role="tab" id="tab-sample" aria-selected="false" aria-controls="panel-sample" tabindex="-1" data-tab="sample">书页样张</button>
+      </div>
+
+      <div class="tab-panel" id="panel-kmap" role="tabpanel" aria-labelledby="tab-kmap">
+        <p class="tab-lead">横向是模型训练的三个阶段：预训练、微调、对齐。纵向的三个维度是本书聚焦的——能力靠什么信号学出来，接到哪套结构与目标上，又如何在硬件上跑得动。</p>
+        <div class="kmap">
+          <div class="kmap-flow" id="kmap-stages"></div>
+          <div class="kmap-dims" id="kmap-dims"></div>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="panel-dir" role="tabpanel" aria-labelledby="tab-dir" hidden>
+        <p class="tab-lead">第 1—4 章打基础与预训练，第 5—6 章讲微调与应用，第 7—8 章是全书重心的强化学习与对齐，第 9—10 章落到训练与推理系统。点击章节可展开小节。</p>
+        <div class="chapter-fold" id="home-chapters"></div>
+        <div class="tab-actions">
+          <a class="btn" href="src/docs/chapters.html">完整章节指引</a>
+          <a class="btn" href="src/docs/teaching.html">课时安排</a>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="panel-sample" role="tabpanel" aria-labelledby="tab-sample" hidden>
+        <p class="tab-lead">书样覆盖公式推导、算法框、表格、代码与图示。点击任意一页可放大查看。</p>
+        <div class="sample-grid" id="home-samples"></div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ============ 11. 购买 ============ -->
-<section class="section section--tint" id="buy">
+<!-- ============ 4. 推荐辞（平铺 3×2，不折叠、不滑动） ============ -->
+<section class="section" id="quotes">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">推荐</span>
+      <h2>北清复交哈联袂推荐</h2>
+      <p>来自北大、清华、复旦、交大与哈工大的学者与产业专家，从教材体系、课程可用性与工程落地三个角度给出评述。</p>
+    </div>
+    <div id="home-quotes"></div>
+  </div>
+</section>
+
+<!-- ============ 5. 配套课件：课件预览与下载 ============ -->
+<section class="section section--tint" id="slides">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">配套课件</span>
+      <h2>课件预览与下载</h2>
+      <p>16 课时配套课件，与教材正文内容对应。课件既可按页做图片预览，也可在本站按课时在线阅读。</p>
+    </div>
+
+    <!-- 由 src/assets/js/slides-panel.js 接管：图片预览 / PDF 浏览 两个 tab。 -->
+    <div id="home-ppt"></div>
+
+    <div class="tab-actions">
+      <a class="btn" href="src/docs/teaching.html">16 课时课件</a>
+      <a class="btn" href="https://github.com/token-to-llm/token-to-llm/tree/main/ppt_16" target="_blank" rel="noopener">在 token-to-llm 查看</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6. 课件精讲（原“如何讲透一个知识点”） ============ -->
+<section class="section" id="book-content">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">课件精讲</span>
+      <h2>如何讲透一个知识点</h2>
+      <p>多数教材讲一个算法，止步于“它是什么、有什么好处”。本书从问题动机出发，落到定义，再把“为什么非要这样写”推成可验算的式子，最后给出实现上的取舍。下面三个例子取自不同章节，走的是同一条路：<b>问题动机 → 定义出发 → 算法推导 → 实现技巧</b>。</p>
+      <span class="part-pin">精读样本 · 建议先看</span>
+    </div>
+
+    <div class="tabs tabs--writing" id="writing-tabs">
+      <div class="tab-list" role="tablist" aria-label="知识点精读样例"></div>
+      <div id="home-writing"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7. 代码仓库 ============ -->
+<section class="section section--tint" id="code">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">代码仓库</span>
+      <h2>代码仓库：<a href="https://github.com/token-to-llm/token-to-llm" target="_blank" rel="noopener" class="title-link">token-to-llm</a></h2>
+      <p>仓库按章组织，<code>src/</code> 下每个 <code>.py</code> 对应书中一处算法或一幅插图；仅依赖 PyTorch 与 Matplotlib，无需额外环境。下面的输出来自真实运行，完整说明按知识点分成六页，见运行示例。</p>
+    </div>
+
+    <div class="code-grid" id="home-code"></div>
+
+    <div class="tab-actions">
+      <a class="btn" href="src/docs/examples.html">运行示例索引</a>
+      <a class="btn" href="https://github.com/token-to-llm/token-to-llm" target="_blank" rel="noopener">在 GitHub 打开 token-to-llm</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 8. 购买 ============ -->
+<section class="section" id="buy">
   <div class="container">
     <div class="section-head">
       <span class="eyebrow">购买</span>
@@ -292,6 +266,9 @@
 
 <!-- 右下角上箭头：回到顶部，并重放一次标题的打字效果。滚过首屏才显形 -->
 <div class="float-tools">
+  <button type="button" class="float-btn float-toc-btn" id="toc-toggle" aria-label="展开本页目录" aria-expanded="false" aria-controls="page-toc">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
   <button type="button" class="float-btn" id="to-top" aria-label="回到顶部并重放打字效果" title="回到顶部 · 重放打字效果">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
   </button>
@@ -299,6 +276,7 @@
 
 <script src="src/assets/js/site.config.js"></script>
 <script src="src/assets/js/chapters.js"></script>
+<script src="src/assets/js/ppt16.js"></script>
 <script src="src/assets/js/chrome.js"></script>
 <script src="src/assets/js/highlight-blocks.js"></script>
 <script src="src/assets/data/cartpole-run.js"></script>
@@ -310,67 +288,158 @@
 <script>
 (function () {
   mountChrome({ page: 'home' });
-  /* ---- 推荐辞：卡片上只放一两句摘要，点“展开全文”才出整段 ---- */
-  const qs = SITE.quotes;
-  document.getElementById('home-quotes').innerHTML =
-    '<div class="quote-rail">' +
-      '<div class="quote-track" id="quote-track" tabindex="0" aria-label="推荐辞，可左右滚动">' +
-        qs.map(function (q) {
-          return '<article class="quote-card">' +
+
+  /* KaTeX 排版入口：先声明、后赋值。tab 面板会在 typesetFormulas 之前渲染，
+     所以这里先给出一个“排队”版本：调用先入队，KaTeX 就位后由真正的实现
+     统一排一遍。否则首个面板会被标成已排过，却一个字都没排。 */
+  const typesetQueue = [];
+  let typesetIn = function (el) { if (el) typesetQueue.push(el); };
+  /* ---- 推荐辞：两种布局，用开关切换 ----
+     QUOTE_LAYOUT = 'grid'（默认）  3×2 平铺，整段展示，不折叠、不滑动
+     QUOTE_LAYOUT = 'rail'         旧的横向滚动轨道 + 左右翻页 + “展开全文”折叠
+     旧的 rail 样式仍完整保留在 site.css 第 23 节（.quote-rail/.quote-track/
+     .quote-nav/.quote-fold），改这一个常量即可整段切回，不需要动 CSS。
+     头像放在 assets/img/quote/ 下；未配置时只渲染姓氏单字 + 固定底色，
+     不发请求，控制台里不会出现六条 404。 */
+  const QUOTE_LAYOUT = 'grid';
+
+  (function quotes() {
+    const host = document.getElementById('home-quotes');
+    const avatarBase = 'src/assets/img/quote/';
+    /* 姓氏散列到六组底色：同一人每次刷新颜色一致，不随加载顺序变 */
+    const TINTS = [
+      ['#eef1fb', '#4c54a4'],
+      ['#fdf0eb', '#d2573a'],
+      ['#eef7f0', '#4a8a5c'],
+      ['#f3f0fa', '#6b5aa8'],
+      ['#eef6fa', '#3f7f96'],
+      ['#faf3ec', '#a4713c'],
+    ];
+    function tint(name) {
+      let h = 0;
+      for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) % 997;
+      return TINTS[h % TINTS.length];
+    }
+    function avatarHtml(q) {
+      const t = tint(q.who);
+      const img = q.avatar
+        ? '<img src="' + avatarBase + q.avatar + '" alt="" loading="lazy"' +
+          ' onerror="this.parentNode.classList.remove(\'has-img\');this.remove()">'
+        : '';
+      return '<span class="quote-avatar' + (q.avatar ? ' has-img' : '') + '"' +
+        ' style="--qa-bg:' + t[0] + ';--qa-fg:' + t[1] + '" aria-hidden="true">' +
+        img + '<b>' + q.who.slice(0, 1) + '</b>' +
+        '</span>';
+    }
+
+    if (QUOTE_LAYOUT === 'rail') {
+      /* —— 旧布局：横向轨道 + 翻页按钮 + 折叠全文 —— */
+      host.innerHTML =
+        '<div class="quote-rail">' +
+          '<div class="quote-track" id="quote-track" tabindex="0" aria-label="推荐辞，可左右滚动">' +
+            SITE.quotes.map(function (q) {
+              return '<article class="quote-card">' +
+                '<div class="quote-by">' +
+                  '<b>' + q.who + '</b><span>' + q.role + '</span>' +
+                '</div>' +
+                '<p class="quote-lead">' + (q.lead || q.text) + '</p>' +
+                '<details class="quote-fold">' +
+                  '<summary>展开全文</summary>' +
+                  '<p class="quote-text">' + q.text + '</p>' +
+                '</details>' +
+              '</article>';
+            }).join('') +
+          '</div>' +
+          '<div class="quote-nav">' +
+            '<button type="button" id="quote-prev" aria-label="上一张推荐辞">' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>' +
+            '</button>' +
+            '<button type="button" id="quote-next" aria-label="下一张推荐辞">' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>' +
+            '</button>' +
+          '</div>' +
+        '</div>';
+
+      (function quoteRail() {
+        const track = document.getElementById('quote-track');
+        const prev = document.getElementById('quote-prev');
+        const next = document.getElementById('quote-next');
+        if (!track || !prev || !next) return;
+
+        const folds = [...track.querySelectorAll('details')];
+        const sync = function () {
+          const max = track.scrollWidth - track.clientWidth - 1;
+          prev.disabled = track.scrollLeft <= 1;
+          next.disabled = track.scrollLeft >= max;
+        };
+        const step = function (dir) {
+          const card = track.querySelector('.quote-card');
+          const w = card ? card.getBoundingClientRect().width + 18 : track.clientWidth * 0.5;
+          track.scrollBy({ left: dir * w, behavior: 'smooth' });
+        };
+
+        /* 一次只展开一张：六段长评同时铺开会把卡片撑出不同高度 */
+        folds.forEach(function (d) {
+          d.addEventListener('toggle', function () {
+            if (!d.open) return;
+            folds.forEach(function (o) { if (o !== d) o.open = false; });
+            requestAnimationFrame(sync);
+          });
+        });
+
+        prev.addEventListener('click', function () { step(-1); });
+        next.addEventListener('click', function () { step(1); });
+        track.addEventListener('scroll', sync, { passive: true });
+        window.addEventListener('resize', sync);
+        sync();
+      })();
+      return;
+    }
+
+    /* —— 新布局：3×2 平铺，整段直出 —— */
+    host.innerHTML =
+      '<div class="quote-grid">' +
+        SITE.quotes.map(function (q) {
+          return '<figure class="quote-card">' +
             '<div class="quote-by">' +
-              '<b>' + q.who + '</b><span>' + q.role + '</span>' +
+              avatarHtml(q) +
+              '<span class="quote-id">' +
+                '<b>' + q.who + '</b>' +
+                '<span class="quote-role">' + q.role + '</span>' +
+              '</span>' +
             '</div>' +
-            '<p class="quote-lead">' + (q.lead || q.text) + '</p>' +
-            '<details class="quote-fold">' +
-              '<summary>展开全文</summary>' +
-              '<p class="quote-text">' + q.text + '</p>' +
-            '</details>' +
-          '</article>';
+            '<blockquote class="quote-text">' + q.text + '</blockquote>' +
+          '</figure>';
         }).join('') +
-      '</div>' +
-      '<div class="quote-nav">' +
-        '<button type="button" id="quote-prev" aria-label="上一张推荐辞">' +
-          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>' +
-        '</button>' +
-        '<button type="button" id="quote-next" aria-label="下一张推荐辞">' +
-          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>' +
-        '</button>' +
-      '</div>' +
-    '</div>';
+      '</div>';
+  })();
 
-  (function quoteRail() {
-    const track = document.getElementById('quote-track');
-    const prev = document.getElementById('quote-prev');
-    const next = document.getElementById('quote-next');
-    if (!track || !prev || !next) return;
+  /* ---- 章节 / 样张 两个 tab ---- */
+  (function bookTabs() {
+    const root = document.getElementById('book-tabs');
+    if (!root) return;
+    const tabs = [...root.querySelectorAll('.tab')];
+    const panels = tabs.map(function (t) { return document.getElementById(t.getAttribute('aria-controls')); });
 
-    /* 默认收起：卡片只显示摘要，点“展开全文”才铺开整段 */
-    const folds = [...track.querySelectorAll('details')];
-    const sync = function () {
-      const max = track.scrollWidth - track.clientWidth - 1;
-      prev.disabled = track.scrollLeft <= 1;
-      next.disabled = track.scrollLeft >= max;
-    };
-    const step = function (dir) {
-      const card = track.querySelector('.quote-card');
-      const w = card ? card.getBoundingClientRect().width + 18 : track.clientWidth * 0.5;
-      track.scrollBy({ left: dir * w, behavior: 'smooth' });
-    };
-
-    /* 一次只展开一张：六段长评同时铺开会把卡片撑出不同高度 */
-    folds.forEach(function (d) {
-      d.addEventListener('toggle', function () {
-        if (!d.open) return;
-        folds.forEach(function (o) { if (o !== d) o.open = false; });
-        requestAnimationFrame(sync);
+    function activate(i) {
+      tabs.forEach(function (t, k) {
+        const on = k === i;
+        t.classList.toggle('is-active', on);
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        t.tabIndex = on ? 0 : -1;
+        if (panels[k]) panels[k].hidden = !on;
+      });
+    }
+    tabs.forEach(function (t, i) {
+      t.addEventListener('click', function () { activate(i); });
+      t.addEventListener('keydown', function (e) {
+        if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+        e.preventDefault();
+        const n = (i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length;
+        tabs[n].focus();
+        activate(n);
       });
     });
-
-    prev.addEventListener('click', function () { step(-1); });
-    next.addEventListener('click', function () { step(1); });
-    track.addEventListener('scroll', sync, { passive: true });
-    window.addEventListener('resize', sync);
-    sync();
   })();
 
   /* ---- 知识体系：三阶段一横排，三个维度各自一张卡 ---- */
@@ -446,9 +515,6 @@
         '<span class="fold-meta">' + c.sections.length + ' 节</span>' +
       '</summary>' +
       '<ul class="fold-body">' + secs + '</ul>' +
-      '<div class="fold-foot">' +
-        '<a href="' + SITE.repo.url + '/blob/' + SITE.repo.branch + '/ppt/' + c.ppt + '" target="_blank" rel="noopener">课件 PDF</a>' +
-      '</div>' +
     '</details>';
   }).join('');
 
@@ -513,26 +579,73 @@
         '</div>',
     },
   ];
-  document.getElementById('home-writing').innerHTML = WRITING.map(function (w, i) {
-    return '<details class="writing-item"' + (i === 0 ? ' open' : '') + '>' +
-      '<summary>' +
-        '<span class="writing-tag">' + w.tag + '</span>' +
-        '<h3>' + w.title + '</h3>' +
-        '<p class="writing-lead">' + w.lead + '</p>' +
-      '</summary>' +
-      '<div class="writing-body">' + w.body + '</div>' +
-    '</details>';
-  }).join('');
+  /* ---- Part A：三个知识点做成 tab，默认停在第一个 ----
+     tab 标题取每条样例标题冒号前的主名（“RMSNorm”“FlashAttention”“GRPO”），
+     完整标题留在面板里当 h3。 */
+  (function writingTabs() {
+    const root = document.getElementById('writing-tabs');
+    const host = document.getElementById('home-writing');
+    if (!root || !host) return;
+    const list = root.querySelector('.tab-list');
+    const shortName = function (w) { return String(w.title).split(/[：:]/)[0]; };
 
-  /* 手机端三张卡一律收起：桌面那套“展开第一张当样板”在窄屏上会把后两张
-     推到几屏之外。CSS 里已有 display 兜底，这里补 open 属性，让 aria 与
-     折叠三角的状态和实际一致。只在首次加载时判断，不监听后续旋转 ——
-     读者手动展开过的卡片不该被旋屏重置。 */
-  if (window.matchMedia && window.matchMedia('(max-width: 700px)').matches) {
-    document.querySelectorAll('.writing-item[open]').forEach(function (el) {
-      el.removeAttribute('open');
+    list.innerHTML = WRITING.map(function (w, i) {
+      return '<button class="tab' + (i === 0 ? ' is-active' : '') + '" type="button" role="tab"' +
+        ' id="wtab-' + i + '" aria-selected="' + (i === 0) + '"' +
+        ' aria-controls="wpanel-' + i + '" data-tab="' + i + '"' +
+        (i === 0 ? '' : ' tabindex="-1"') + '>' + shortName(w) + '</button>';
+    }).join('');
+
+    host.innerHTML = WRITING.map(function (w, i) {
+      /* tab 只决定显示哪一个；卡片外观沿用重构前的 details 版式：
+         标题区在 .writing-head，正文在 .writing-body，边框、内边距、字号
+         与旧版一致，只是把 <details>/<summary> 换成 tab 面板，避免两套折叠
+         控件叠在一起。 */
+      return '<div class="tab-panel writing-panel" id="wpanel-' + i + '" role="tabpanel"' +
+        ' aria-labelledby="wtab-' + i + '"' + (i === 0 ? '' : ' hidden') + '>' +
+        '<div class="writing-head">' +
+          '<span class="writing-tag">' + w.tag + '</span>' +
+          '<h3 class="writing-title">' + w.title + '</h3>' +
+          '<p class="writing-lead">' + w.lead + '</p>' +
+        '</div>' +
+        '<div class="writing-body">' + w.body + '</div>' +
+      '</div>';
+    }).join('');
+
+    const tabs = [...list.querySelectorAll('.tab')];
+    const panels = tabs.map(function (t) { return document.getElementById('wpanel-' + t.dataset.tab); });
+
+    function activate(i) {
+      tabs.forEach(function (t, k) {
+        const on = k === i;
+        t.classList.toggle('is-active', on);
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        t.tabIndex = on ? 0 : -1;
+        panels[k].hidden = !on;
+      });
+      /* 隐藏面板里的 display 公式量不到宽度，排版会错位：
+         所以每个面板首次显示时才排一次，排过的打标记不再重排。 */
+      if (panels[i] && !panels[i].dataset.typeset) {
+        panels[i].dataset.typeset = '1';
+        typesetIn(panels[i]);
+      }
+    }
+
+    tabs.forEach(function (t, i) {
+      t.addEventListener('click', function () { activate(i); });
+      t.addEventListener('keydown', function (e) {
+        if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+        e.preventDefault();
+        const n = (i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length;
+        tabs[n].focus();
+        activate(n);
+      });
     });
-  }
+
+    /* 首个面板此刻是可见的，直接排 */
+    panels[0].dataset.typeset = '1';
+    typesetIn(panels[0]);
+  })();
 
   /* ---- 代码仓库：2×2，左边输出、右边画面 ---- */
   const CODE_CASES = [
@@ -652,16 +765,42 @@
     '</button>';
   }).join('');
 
-  /* ---- 写法里的公式：KaTeX 只在主页用到这几条排版，不必整套 markdown ---- */
-  /* ---- 写法正文里的公式：$...$ 与 $$...$$ 交给 KaTeX 统排 ---- */
+  /* ---- 写法正文里的公式：$...$ 与 $$...$$ 交给 KaTeX 统排 ----
+     tab 面板只有在显示时才量得到宽度（display 公式的排版依赖容器宽度），
+     所以这里暴露 typesetIn(el)：调用时若 KaTeX 还没就位，就先排队，加载完
+     再统一排。已经排过的元素由调用方用 dataset.typeset 标记，不会重复。 */
   (function typesetFormulas() {
-    if (!document.querySelector('.writing-body').textContent.includes('$')) return;
+    if (!document.querySelector('.writing-body')) return;
 
     const V = 'src/assets/vendor/';
     const css = document.createElement('link');
     css.rel = 'stylesheet';
     css.href = V + 'katex/katex.min.css';
     document.head.appendChild(css);
+
+    const pending = typesetQueue.splice(0);
+    let ready = false;
+
+    function render(el) {
+      if (!window.renderMathInElement) return;
+      window.renderMathInElement(el, {
+        delimiters: [
+          { left: '$$', right: '$$', display: true },
+          { left: '$', right: '$', display: false },
+        ],
+        macros: window.MATH_MACROS || {},
+        throwOnError: false,
+        errorColor: '#d2573a',
+        ignoredTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+      });
+    }
+
+    typesetIn = function (el) {
+      if (!el) return;
+      if (!el.textContent.includes('$')) return;
+      if (ready) render(el);
+      else pending.push(el);
+    };
 
     function script(src) {
       return new Promise(function (ok, no) {
@@ -680,18 +819,8 @@
       .then(function () { return script(V + 'katex/auto-render.min.js'); })
       .then(function () {
         if (!window.renderMathInElement) return;
-        document.querySelectorAll('.writing-body').forEach(function (el) {
-          window.renderMathInElement(el, {
-            delimiters: [
-              { left: '$$', right: '$$', display: true },
-              { left: '$', right: '$', display: false },
-            ],
-            macros: window.MATH_MACROS || {},
-            throwOnError: false,
-            errorColor: '#d2573a',
-            ignoredTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
-          });
-        });
+        ready = true;
+        pending.splice(0).forEach(render);
       })
       .catch(function () {
         /* 公式加载失败就留下 TeX 源码，不让整页卡住 */
@@ -899,8 +1028,7 @@
     };
   })();
 
-  /* ---- 右下角上箭头：滚过首屏才出现；点击回顶并重放标题打字效果 ---- */
-  (function floatTools() {
+  /* ---- 右下角上箭头：滚过首屏才出现；点击回顶并重放标题打字效果 ---- */  (function floatTools() {
     const tools = document.querySelector('.float-tools');
     const top = document.getElementById('to-top');
     if (!tools) return;
@@ -953,6 +1081,75 @@
       '</div>' +
     '</div>';
   }).join('');
+
+  /* ---- 本页目录：桌面右侧固定轨道，窄屏收成右下角按钮 + 底部抽屉 ----
+     锚点清单写死在 HTML 里，不从 DOM 抓 h2 文本——各节标题会被打字机脚本
+     重写子节点，初始化后读到的不是稳定值。 */
+  (function pageToc() {
+    const toc = document.getElementById('page-toc');
+    if (!toc) return;
+    const links = [...toc.querySelectorAll('a')];
+    const targets = links
+      .map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); })
+      .filter(Boolean);
+
+    /* 滚动高亮：取当前跨过视口上沿 1/3 处的最后一个区块 */
+    function syncActive() {
+      const line = window.scrollY + window.innerHeight * 0.32;
+      let idx = 0;
+      targets.forEach(function (t, i) {
+        if (t.offsetTop <= line) idx = i;
+      });
+      links.forEach(function (a, i) { a.classList.toggle('is-active', i === idx); });
+    }
+    syncActive();
+    window.addEventListener('scroll', syncActive, { passive: true });
+
+    /* 窄屏抽屉 */
+    const toggle = document.getElementById('toc-toggle');
+    const backdrop = document.getElementById('toc-backdrop');
+
+    function setOpen(open) {
+      toc.classList.toggle('is-open', open);
+      if (backdrop) backdrop.hidden = !open;
+      if (toggle) {
+        toggle.setAttribute('aria-expanded', String(open));
+        toggle.setAttribute('aria-label', open ? '收起本页目录' : '展开本页目录');
+      }
+      document.body.classList.toggle('is-locked', open);
+    }
+
+    if (toggle) {
+      toggle.addEventListener('click', function () {
+        setOpen(!toc.classList.contains('is-open'));
+      });
+    }
+    if (backdrop) {
+      backdrop.addEventListener('click', function () { setOpen(false); });
+    }
+    links.forEach(function (a) {
+      a.addEventListener('click', function () { setOpen(false); });
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && toc.classList.contains('is-open')) setOpen(false);
+    });
+    /* 由窄屏拉宽到桌面时，别忘了卸掉抽屉残留的锁滚动 */
+    window.addEventListener('resize', function () {
+      if (window.innerWidth > 1180 && toc.classList.contains('is-open')) setOpen(false);
+    });
+  })();
+
+  /* ---- Banner 的“购买本书”：直达京东商品页 ----
+     SITE.shops 里京东那条是带追踪参数的推广链接，页脚/购买区仍用同一份配置；
+     这里只给首屏主按钮单独指向它，避免读者先滚到购买区再选一次。 */
+  (function heroBuy() {
+    const btn = document.getElementById('hero-buy');
+    const jd = (SITE.shops || []).filter(function (s) { return s.name === '京东'; })[0];
+    if (!btn || !jd) return;
+    btn.href = jd.url;
+    btn.target = '_blank';
+    btn.rel = 'noopener';
+  })();
 })();
 </script>
 </body>
