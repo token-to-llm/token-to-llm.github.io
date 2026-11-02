@@ -3,7 +3,7 @@
 教材的 GitHub Pages 站点，纯静态：无框架、无构建、无 node_modules。
 
 - **配书代码**：[github.com/token-to-llm/token-to-llm](https://github.com/token-to-llm/token-to-llm) — 书中每个 `src/*.py` 对应一处算法或一幅插图
-- **在线站点**：[token-to-llm.com](https://token-to-llm.com)
+- **在线站点**：[pkullm.com](https://pkullm.com)
 
 ## 目录
 

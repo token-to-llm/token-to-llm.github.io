@@ -5,11 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>大语言模型：训练、精调与对齐 — 杨耀东 · 邓杭 著</title>
 <meta name="description" content="《大语言模型：训练、精调与对齐》由清华大学出版社出版，结合北京大学首门系统讲授大语言模型的课程讲义，从语言模型基础、预训练、微调、强化学习对齐到训练与推理系统，配 900+ 页教学课件与可运行开源代码。">
-<link rel="canonical" href="https://token-to-llm.github.io/">
+<link rel="canonical" href="https://pkullm.com/">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://pkullm.com/">
 <meta property="og:title" content="大语言模型：训练、精调与对齐">
 <meta property="og:description" content="把公式、伪代码与可运行代码串成同一条路径。清华大学出版社出版，配 900+ 页教学课件。">
-<meta property="og:image" content="src/assets/img/cover-art.jpg">
+<meta property="og:image" content="https://pkullm.com/src/assets/img/cover-art.jpg">
 <meta name="twitter:card" content="summary_large_image">
 
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -63,6 +64,7 @@
     <a href="#book-content">课件精讲</a>
     <a href="#code">代码仓库</a>
     <a href="#buy">购买</a>
+    <a href="#cite">引用本书</a>
   </div>
 </nav>
 <div class="toc-backdrop" id="toc-backdrop" hidden></div>
@@ -103,10 +105,7 @@
         <div class="avatar"><img src="src/assets/img/author-yang.webp" alt="杨耀东" width="144" height="144" loading="lazy"></div>
         <div>
           <h3>杨耀东</h3>
-          <div class="author-role">北京大学人工智能研究院研究员（博雅学者）· 博士生导师</div>
-          <div class="author-role author-role--extra">灵初智能有限公司联合创始人兼首席科学家</div>
-          <p>长期从事强化学习与对齐研究，代表性成果包括 PKU-Beaver、BeaverTails、Safe RLHF、Aligner 与 OmniSafe。大模型对齐综述提出 RICE 原则；论文《Language Models Resist Alignment》获 ACL 2025 最佳论文奖。自 2022 年起位列 CSRankings 北京大学 AI/ML 方向学者首位。</p>
-          <p class="author-note">在北京大学开设首门系统讲授大语言模型的课程《大语言模型基础与对齐》，获北京大学教学成果奖二等奖。</p>
+          <p>北京大学人工智能研究院研究员（博雅学者）、院长助理、博士生导师，北京大学元培学院通用人工智能实验班（“通班”）2022 级班主任。入选国家人力资源和社会保障部高层次留学人才、国家级优秀青年人才及中国科协青年人才托举工程。主要研究方向为智能体交互学习与对齐，科研领域涵盖强化学习、人工智能对齐与具身智能。在 <i>Nature Machine Intelligence</i>、<i>Cell Press Matter</i>、<i>Artificial Intelligence</i>、<i>JMLR</i>、<i>TPAMI</i> 等国际顶级期刊和会议发表论文 300 余篇，谷歌学术引用逾 22 000 次。自 2022 年以来位列 CSRankings 北京大学 AI/ML 方向学者首位，入选 Elsevier/Stanford 全球前 2% 顶尖科学家榜单。五次获得最佳论文级别荣誉，包括 ACL 2025 最佳论文奖、英国科研与创新局 UKRI 2026 年度最佳论文、ICCV 2023 最佳论文奖入围、CoRL 2020 最佳系统论文奖及 AAMAS 2021 最佳前瞻性论文奖。入选麻省理工科技评论“AI100 青年先锋”、福布斯中国 2025 科创革新力人物、WAIC 2022“云帆奖·璀璨明星”及 ACM SIGAI China 新星奖。在北京大学开设首门大语言模型相关课程“大语言模型基础与对齐”，获北京大学教学成果奖二等奖及第三届全国计算机教学案例大赛二等奖。于人工智能顶会 ICML 2025 主讲“大语言模型对齐方法”三小时讲习班。</p>
           <div class="author-links">
             <a href="https://www.yangyaodong.com/" target="_blank" rel="noopener">个人主页</a>
             <a href="mailto:yaodong.yang@pku.edu.cn">yaodong.yang@pku.edu.cn</a>
@@ -253,6 +252,42 @@
   </div>
 </section>
 
+<!-- ============ 9. 引用本书 ============ -->
+<section class="section section--tint" id="cite">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">引用</span>
+      <h2>引用本书</h2>
+      <p>在论文、课程材料或综述中引用本书，请使用下面的 BibTeX 条目。更多格式与配套代码的引用方式见<a href="src/docs/cite.html">引用说明</a>。</p>
+    </div>
+
+    <div class="cite-card">
+      <div class="cite-panel">
+        <div class="cite-panel-head">
+          <span class="cite-panel-title">BibTeX</span>
+          <button type="button" class="cite-copy" data-copy-target="cite-bibtex">复制</button>
+        </div>
+        <pre data-lang="text"><code id="cite-bibtex">@book{deng2026llm,
+  title     = {大语言模型：训练、精调与对齐},
+  author    = {邓杭 and 杨耀东},
+  publisher = {清华大学出版社},
+  address   = {北京},
+  year      = {2026},
+  isbn      = {978-7-302-71036-3}
+}</code></pre>
+      </div>
+
+      <div class="cite-panel">
+        <div class="cite-panel-head">
+          <span class="cite-panel-title">GB/T 7714</span>
+          <button type="button" class="cite-copy" data-copy-target="cite-gbt">复制</button>
+        </div>
+        <p class="cite-quote" id="cite-gbt">邓杭, 杨耀东. 大语言模型：训练、精调与对齐[M]. 北京: 清华大学出版社, 2026.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <div data-chrome="footer"></div>
 
 <!-- 图片放大层 -->
@@ -279,6 +314,7 @@
 <script src="src/assets/js/ppt16.js"></script>
 <script src="src/assets/js/chrome.js"></script>
 <script src="src/assets/js/highlight-blocks.js"></script>
+<script src="src/assets/js/cite-copy.js"></script>
 <script src="src/assets/data/cartpole-run.js"></script>
 <script src="src/assets/js/cartpole-play.js"></script>
 <script src="src/assets/js/orbit-field.js"></script>

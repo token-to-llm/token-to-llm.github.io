@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://token-to-llm.github.io/sitemap.xml
+Sitemap: https://pkullm.com/sitemap.xml

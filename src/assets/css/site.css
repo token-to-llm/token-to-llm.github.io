@@ -3453,9 +3453,10 @@ body.is-locked {
 }
 
 @media (max-width: 560px) {
-  /* 窄屏作者卡改成两行紧凑列表：头像与姓名并排，简介折行在下 */
+  /* 窄屏作者卡改回竖排：介绍已经很长，头像再占掉左侧 60px，
+     正文只剩 230px 左右，一行放不下几个字 */
   #authors .author-card {
-    flex-direction: row;
+    flex-direction: column;
     padding: 16px;
   }
   #authors .author-card p {
@@ -3617,27 +3618,45 @@ body.is-locked {
   }
 }
 
-/* 26g. 作者条：两列并排、短小，长介绍收进 <details>
-   目标是 Banner 之下 200px 以内收住，让作者名连同头像一起落在首屏。 */
+/* 26g. 作者条：上下两行、各自通栏
+   杨耀东的介绍较长，并排两列时右卡会被撑高、左卡留白；
+   改成一列上下分布，两段介绍都能拿到整行宽度，阅读行宽也更合适。 */
 #authors.section--tight {
   padding: 32px 0 36px;
 }
 
 .author-strip {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
 }
 
+/* 通栏后卡片宽约 1100px，正文若跟着铺满，一行 80 字以上很难回扫。
+   头像占去左侧一列，正文列再让出一点边距后约 96ch 才铺满卡片，
+   所以这里不在段落上设 max-width——居中的 74ch 会在卡片右侧留出大片空白，
+   看起来像是文字没撑开。行宽交给卡片自身的 padding 控制。 */
 .author-strip .author-card {
-  padding: 18px 20px;
-  gap: 16px;
+  padding: 22px 24px;
+  gap: 20px;
   align-items: flex-start;
 }
 
+/* 正文列必须能吃掉剩余宽度，否则 flex 子项按内容收缩，
+   长段落就只有半张卡片宽。
+   注意排除 .avatar——它同样是卡片的直接子 div，被这条规则改掉
+   flex:none 后会被压成一条竖椭圆，圆头像就不圆了。 */
+.author-strip .author-card > div:not(.avatar) {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* 头像必须锁死为正方形：flex 项默认允许收缩，只有同时给出
+   flex:none 与固定宽高，border-radius:50% 画出来才是正圆 */
 #authors .avatar {
-  width: 60px;
-  height: 60px;
+  flex: 0 0 auto;
+  width: 88px;
+  height: 88px;
+  aspect-ratio: 1 / 1;
 }
 
 .author-strip .author-card h3 {
@@ -3700,8 +3719,8 @@ body.is-locked {
 }
 
 @media (max-width: 900px) {
+  /* 已是单列，这里只收紧间距 */
   .author-strip {
-    grid-template-columns: minmax(0, 1fr);
     gap: 12px;
   }
   #authors.section--tight {
@@ -3711,12 +3730,13 @@ body.is-locked {
 
 @media (max-width: 560px) {
   .author-strip .author-card {
-    padding: 14px 16px;
-    gap: 12px;
+    padding: 16px 16px;
+    gap: 14px;
   }
   #authors .avatar {
-    width: 48px;
-    height: 48px;
+    flex: 0 0 auto;
+    width: 64px;
+    height: 64px;
   }
 }
 
@@ -3729,6 +3749,75 @@ body.is-locked {
 #slides,
 #book-content,
 #code,
-#buy {
+#buy,
+#cite {
   scroll-margin-top: 76px;
+}
+
+/* 27. 引用本书：一栏自上而下，BibTeX 在上、GB/T 7714 在下
+   BibTeX 是深色代码块，GB/T 7714 是普通引文段落——两者外观本来就不同，
+   并排会让右栏显得空，单栏反而更好读。 */
+.cite-card {
+  max-width: 780px;
+}
+
+.cite-panel + .cite-panel {
+  margin-top: 26px;
+}
+
+.cite-panel-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.cite-panel-title {
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.cite-panel pre {
+  margin: 0;
+}
+
+/* GB/T 7714 不做代码块：一段引文，左侧一道竖线标记即可 */
+.cite-quote {
+  margin: 0;
+  padding: 14px 18px;
+  border-left: 3px solid var(--tint-primary-strong);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: var(--paper);
+  font-size: 0.92rem;
+  line-height: 1.8;
+  color: var(--ink-2);
+}
+
+.cite-copy {
+  flex: none;
+  font: inherit;
+  font-size: 0.76rem;
+  line-height: 1;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.cite-copy:hover {
+  border-color: var(--tint-primary-strong);
+  color: var(--primary);
+}
+
+.cite-copy.is-done {
+  border-color: var(--tint-primary-strong);
+  background: var(--tint-primary);
+  color: var(--primary-ink);
 }
