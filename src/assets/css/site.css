@@ -779,6 +779,87 @@ hr {
   }
 }
 
+/* ---------- 10b. 课时安排顶部的课件入口 ----------
+   页面一进来就要看见“课件在哪、怎么拿”：左边说明，右边两个动作，
+   打包进度折在下方，不占初始高度。 */
+.ppt-hero {
+  margin-top: 28px;
+  padding: 20px 22px;
+  border: 1px solid var(--line-strong);
+  border-left: 3px solid var(--primary);
+  border-radius: var(--radius);
+  background: var(--paper);
+  box-shadow: var(--shadow-sm);
+}
+
+.ppt-hero-text {
+  margin-bottom: 14px;
+}
+
+.ppt-hero-title {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--primary);
+  margin-bottom: 6px;
+}
+
+.ppt-hero-text p {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: var(--ink-2);
+}
+
+.ppt-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.ppt-hero .btn:disabled {
+  opacity: 0.55;
+  cursor: progress;
+}
+
+.ppt-hero-progress {
+  margin-top: 14px;
+}
+
+.ppt-hero-bar {
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--tint-primary-strong);
+  overflow: hidden;
+}
+
+.ppt-hero-bar span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--primary);
+  transition: width 0.25s ease;
+}
+
+.ppt-hero-progress p {
+  margin: 8px 0 0;
+  font-size: 0.84rem;
+  color: var(--ink-2);
+}
+
+@media (max-width: 700px) {
+  .ppt-hero {
+    padding: 16px 16px;
+  }
+  .ppt-hero-actions .btn {
+    flex: 1 1 100%;
+  }
+}
+
 /* ---------- 11. 文档布局 ----------
    整块仍在主页同一个 .container 的宽度里（--maxw），左右边线与页头文字对齐；
    内部分三列：导航侧栏 | 正文 | 页内目录。三列都必须显式声明，

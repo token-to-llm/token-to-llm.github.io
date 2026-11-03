@@ -21,6 +21,24 @@
         <p>全书十章合计 900+ 页课件。按一学期 <b>16 课时</b>讲授时，公式与推导密度最大的第 2、4、7、8、9、10 章各拆成上下两次课，其余四章各占一次课。拆分点都落在节的自然边界上，不切断一个完整方法的推导链。</p>
       </div>
 
+      <!-- 顶部课件入口：直接开当前课时 PDF，或一次性打包下载 16 份 -->
+      <div class="ppt-hero" id="ppt-hero">
+        <div class="ppt-hero-text">
+          <span class="ppt-hero-title">课件 PDF</span>
+          <p>16 份课件按课时交付，16:9 版式、无动画，可投影或离线播放。可以直接打开当前课时的 PDF，也可以打包下载全部 16 份。</p>
+        </div>
+        <div class="ppt-hero-actions">
+          <a class="btn btn-primary" id="ppt-open" href="#" target="_blank" rel="noopener">打开第 1 课时 PDF</a>
+          <button type="button" class="btn" id="ppt-zip">
+            下载全部 16 份（.zip）
+          </button>
+        </div>
+        <div class="ppt-hero-progress" id="ppt-progress" hidden>
+          <div class="ppt-hero-bar"><span id="ppt-bar-fill"></span></div>
+          <p id="ppt-status" role="status" aria-live="polite"></p>
+        </div>
+      </div>
+
       <div class="prose" style="margin-top:48px">
         <h2 id="h-viewer">课件预览</h2>
         <p>选一条课时，下方即载入该次课对应的 PDF。也可以直接跳到<a href="#plan16">分配表</a>，按章挑选。</p>
@@ -97,6 +115,15 @@
     return BASE + file + '#view=FitH';
   }
 
+  /* 同一份 PDF 的两个来源：CDN 主用，raw.githubusercontent 兜底。
+     打包下载时逐个文件回退，单个文件 404 不该让整包失败。 */
+  function pdfSources(file) {
+    const list = [];
+    if (BASE) list.push(BASE + file);
+    list.push('https://raw.githubusercontent.com/token-to-llm/token-to-llm/main/ppt_16/' + file);
+    return list;
+  }
+
   const picker = document.getElementById('lec-picker');
   const frame = document.getElementById('lec-frame');
   const placeholder = document.getElementById('lec-placeholder');
@@ -106,8 +133,14 @@
 
   function show(file) {
     const lec = LECTURES.filter(function (l) { return l.file === file; })[0];
-    if (!lec || file === current) {
-      if (lec) { capText.textContent = '第 ' + lec.no + ' 课时 · ' + lec.title; }
+    if (!lec) return;
+    const heroOpen = document.getElementById('ppt-open');
+    if (heroOpen) {
+      heroOpen.href = pdfHref(lec.file);
+      heroOpen.textContent = '打开第 ' + lec.no + ' 课时 PDF';
+    }
+    if (file === current) {
+      capText.textContent = '第 ' + lec.no + ' 课时 · ' + lec.title;
       return;
     }
     current = file;
@@ -177,6 +210,115 @@
     const viewer = document.querySelector('.lec-viewer');
     if (viewer) viewer.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
+
+  /* ---- 打包下载：浏览器端拉取 16 份 PDF，用 JSZip 打成一个包 ----
+     GitHub 上没有现成的整包下载链接（仓库归档是整个代码库），所以在前端拼。
+     JSZip 只在第一次点按钮时才加载，未点过的读者不为它付流量。 */
+  const JSZIP_URLS = [
+    'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js',
+    'https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js',
+  ];
+
+  function loadScript(url) {
+    return new Promise(function (resolve, reject) {
+      const s = document.createElement('script');
+      s.src = url;
+      s.onload = resolve;
+      s.onerror = function () { s.remove(); reject(new Error(url)); };
+      document.head.appendChild(s);
+    });
+  }
+
+  async function loadJSZip() {
+    if (window.JSZip) return window.JSZip;
+    for (let i = 0; i < JSZIP_URLS.length; i++) {
+      try {
+        await loadScript(JSZIP_URLS[i]);
+        if (window.JSZip) return window.JSZip;
+      } catch (e) { /* 换下一个源 */ }
+    }
+    throw new Error('JSZip 加载失败');
+  }
+
+  /* 先走 CDN，失败再走 raw.githubusercontent；两处都挂才算这个文件失败 */
+  async function fetchPdf(file) {
+    const urls = pdfSources(file);
+    let lastErr = null;
+    for (let i = 0; i < urls.length; i++) {
+      try {
+        const r = await fetch(urls[i]);
+        if (!r.ok) throw new Error(r.status + ' ' + urls[i]);
+        return await r.arrayBuffer();
+      } catch (e) { lastErr = e; }
+    }
+    throw lastErr || new Error(file);
+  }
+
+  /* 打包内文件名：序号 + 课时名，解压后按课次排好 */
+  function zipName(lec) {
+    return String(lec.no).padStart(2, '0') + ' ' +
+      String(lec.title).replace(/[\\/:*?"<>|]/g, '-') + '.pdf';
+  }
+
+  const zipBtn = document.getElementById('ppt-zip');
+  const progress = document.getElementById('ppt-progress');
+  const barFill = document.getElementById('ppt-bar-fill');
+  const statusEl = document.getElementById('ppt-status');
+
+  async function buildZip() {
+    if (!LECTURES.length) return;
+    zipBtn.disabled = true;
+    progress.hidden = false;
+    barFill.style.width = '0%';
+    statusEl.textContent = '正在准备打包…';
+
+    const failed = [];
+    try {
+      const JSZip = await loadJSZip();
+      const zip = new JSZip();
+      const folder = zip.folder('token-to-llm-ppt16');
+
+      for (let i = 0; i < LECTURES.length; i++) {
+        const lec = LECTURES[i];
+        statusEl.textContent = '正在下载 ' + (i + 1) + ' / ' + LECTURES.length +
+          ' · ' + lec.title;
+        try {
+          folder.file(zipName(lec), await fetchPdf(lec.file));
+        } catch (e) {
+          failed.push(lec);
+        }
+        barFill.style.width = Math.round(((i + 1) / LECTURES.length) * 90) + '%';
+      }
+
+      statusEl.textContent = '正在压缩…';
+      const blob = await zip.generateAsync(
+        { type: 'blob', compression: 'STORE' },
+        function (meta) {
+          barFill.style.width = (90 + Math.round(meta.percent * 0.1)) + '%';
+        }
+      );
+
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'token-to-llm-ppt16.zip';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 60000);
+
+      barFill.style.width = '100%';
+      statusEl.textContent = failed.length
+        ? '已打包 ' + (LECTURES.length - failed.length) + ' 份，' +
+          failed.length + ' 份下载失败（' + failed[0].title + ' 等），可重试。'
+        : '已打包全部 ' + LECTURES.length + ' 份课件。';
+    } catch (e) {
+      statusEl.textContent = '打包失败：' + ((e && e.message) || e) + '。请检查网络后重试。';
+    } finally {
+      zipBtn.disabled = false;
+    }
+  }
+
+  if (zipBtn) zipBtn.addEventListener('click', buildZip);
 
   /* ---- 一进视口才载入第 1 课时：2.7 MB 的 PDF 不该和正文一起抢带宽 ---- */
   const box = document.getElementById('lec-frame-box');
