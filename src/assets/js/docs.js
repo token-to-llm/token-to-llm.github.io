@@ -6,7 +6,8 @@
    * @param {string} mdPath   相对站根的 markdown 路径，留空表示本页自行渲染
    */
   async function bootDoc(activeId, mdPath) {
-    mountChrome({ page: 'docs' });
+    /* 勘误已提到主导航，单独高亮它，其余文档页仍归在“文档”下。 */
+    mountChrome({ page: activeId === 'errata' ? 'errata' : 'docs' });
     mountSidebar(activeId);
 
     const target = document.getElementById('doc-content');

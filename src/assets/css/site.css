@@ -304,17 +304,6 @@ hr {
   color: var(--ink);
 }
 
-.brand-sub {
-  font-family: var(--sans);
-  font-weight: 400;
-  font-size: 0.82rem;
-  color: var(--ink-3);
-  letter-spacing: 0;
-  margin-left: 12px;
-  padding-left: 12px;
-  border-left: 1px solid var(--line-strong);
-}
-
 .nav {
   display: flex;
   align-items: center;
@@ -1522,10 +1511,6 @@ hr {
   border-color: var(--tint-primary-strong);
 }
 
-.person-mail {
-  margin-top: 14px;
-}
-
 .person-body h3 {
   font-size: 1.05rem;
   margin: 0 0 2px;
@@ -1923,11 +1908,19 @@ hr {
   font-size: 0.88rem;
 }
 
-.footer-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 0.8fr));
-  gap: 36px;
-  margin-bottom: 40px;
+.footer-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px 40px;
+  margin-bottom: 32px;
+}
+
+/* flex 项默认 min-width:auto，长串出版信息会把整行顶出容器，
+   窄屏下就截掉最后一两个字。这里放开收缩并允许正文换行。 */
+.footer-brand {
+  min-width: 0;
 }
 
 .footer h4 {
@@ -1940,14 +1933,21 @@ hr {
   margin: 0 0 12px;
 }
 
-.footer-col a {
-  display: block;
-  color: var(--ink-2);
-  padding: 4px 0;
-  font-size: 0.86rem;
+/* 页脚链接横排，放不下就整项折到下一行；间距靠 gap，不用分隔符。 */
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 22px;
 }
 
-.footer-col a:hover {
+.footer-links a {
+  color: var(--ink-2);
+  font-size: 0.86rem;
+  padding: 2px 0;
+}
+
+.footer-links a:hover {
   color: var(--primary);
 }
 
@@ -1955,8 +1955,9 @@ hr {
   color: var(--ink-3);
   font-size: 0.85rem;
   line-height: 1.75;
-  max-width: 30em;
-  margin: 12px 0 0;
+  /* 30em 在窄屏上比容器还宽，取两者较小值才算真正不溢出 */
+  max-width: min(30em, 100%);
+  margin: 8px 0 0;
 }
 
 .footer-bottom {
@@ -2981,8 +2982,7 @@ body.is-locked {
   .grid-4,
   .people-grid,
   .buy-grid,
-  .contact-grid,
-  .footer-grid {
+  .contact-grid {
     grid-template-columns: minmax(0, 1fr);
   }
   .contact-grid {

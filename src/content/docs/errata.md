@@ -74,4 +74,4 @@ class RMSNorm(torch.nn.Module):
 
 ## 三、如何反馈
 
-发现新的问题，请附上**页码、原文、建议改法**三要素，发送到[联系页面](../contact/index.html)所列邮箱，注明主题 `[勘误]`，或在[仓库 Issue](https://github.com/token-to-llm/token-to-llm/issues) 中提交。经确认的条目会并入本表并标注版本。
+发现新的问题，请附上**页码、原文、建议改法**三要素，在[仓库 Issue](https://github.com/token-to-llm/token-to-llm/issues) 中提交，或在[联系页面](../contact/index.html)留言。经确认的条目会并入本表并标注版本。

@@ -1,6 +1,6 @@
 # 环境安装
 
-配套代码在独立仓库中维护：[token-to-llm](https://github.com/token-to-llm/token-to-llm)。
+配套代码在独立仓库中维护：[代码仓库](https://github.com/token-to-llm/token-to-llm)。
 `src/` 下每个 `.py` 文件对应书中一处算法或一幅插图，命名与正文的小节号一致，便于对照阅读。
 
 ## 1. 获取代码

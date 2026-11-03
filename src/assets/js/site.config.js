@@ -20,8 +20,7 @@
     book: {
       title: '大语言模型：训练、精调与对齐',
       titleEn: 'Large Language Models: Training, Fine-Tuning and Alignment',
-      subtitle:
-        '结合北京大学首门系统讲授大语言模型的课程讲义，把公式、伪代码与可运行代码串成同一条路径。',
+      subtitle: '北京大学人工智能专业大语言模型课程讲义及教材。',
       authors: ['杨耀东', '邓杭'],
       publisher: '清华大学出版社',
       isbn: '978-7-302-71036-3',
@@ -61,12 +60,11 @@
     },
 
     contact: {
-      email: 'dhcode95@gmail.com',
       wechat: 'xiaodongguaAIGC',
       wechatQr: 'assets/img/wechat-qr.jpg',
       people: [
-        { name: '邓杭', role: '北京大学 PAIR-Lab 科研助理', email: 'dhcode95@gmail.com', wechat: 'xiaodongguaAIGC', qr: 'assets/img/wechat-qr.jpg', qrNote: '微信扫码添加' },
-        { name: '杨耀东', role: '北京大学人工智能研究院研究员（博雅学者）', email: 'yaodong.yang@pku.edu.cn', wechat: '', qr: '', qrNote: '' },
+        { name: '邓杭', role: '北京大学 PAIR-Lab 科研助理', wechat: 'xiaodongguaAIGC', qr: 'assets/img/wechat-qr.jpg', qrNote: '微信扫码添加' },
+        { name: '杨耀东', role: '北京大学人工智能研究院研究员（博雅学者）', wechat: '', qr: '', qrNote: '' },
       ],
     },
 
@@ -102,6 +100,7 @@
     nav: [
       { id: 'home', label: '主页', href: '__home__' },
       { id: 'docs', label: '文档', href: 'docs/index.html' },
+      { id: 'errata', label: '勘误', href: 'docs/errata.html' },
       { id: 'contact', label: '联系', href: 'contact/index.html' },
     ],
 

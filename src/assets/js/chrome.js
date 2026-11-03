@@ -51,11 +51,11 @@ function renderHeader(activePage) {
 <header class="topbar">
   <div class="container">
     <a class="brand" href="${window.SITE.home}">
-      <span>${esc(book.title)}<span class="brand-sub">${esc(book.titleEn ? 'token-to-llm' : '')}</span></span>
+      <span>${esc(book.title)}</span>
     </a>
     <nav class="nav" id="site-nav" aria-label="主导航">${links}</nav>
     <div class="nav-actions">
-      <a class="btn btn-sm nav-repo" href="${repo.url}" target="_blank" rel="noopener" aria-label="代码仓库 token-to-llm（在 GitHub 打开）">${ICON.github}<span>代码仓库</span></a>
+      <a class="btn btn-sm nav-repo" href="${repo.url}" target="_blank" rel="noopener" aria-label="代码仓库（在 GitHub 打开）">${ICON.github}<span>代码仓库</span></a>
       <a class="btn btn-primary btn-sm" href="${window.SITE.home}#buy">购买</a>
       <button class="icon-btn nav-toggle" id="nav-toggle" aria-label="展开导航" aria-expanded="false" aria-controls="site-nav">${ICON.menu}</button>
     </div>
@@ -64,41 +64,32 @@ function renderHeader(activePage) {
 }
 
 function renderFooter() {
-  const { book, repo, docs } = window.SITE;
-  /* 页脚只列顶层文档：子页在侧栏已挂在索引下面，页脚再铺一遍会把一栏撑成十几行。 */
-  const docLinks = docs.flatMap((g) => g.items.filter((d) => !d.sub));
+  const { book, repo } = window.SITE;
+  /* 页脚只保留 7 个入口：代码仓库、课件、文档、勘误、致谢、购买、引用。
+     横向铺开、放不下自动折行；不再分栏，也不要“导航”这种小标题。 */
+  const links = [
+    { label: '代码仓库', href: repo.url, external: true },
+    { label: '课件', href: window.SITE.home + '#slides' },
+    { label: '文档', href: window.SITE.url('docs/index.html') },
+    { label: '勘误', href: window.SITE.url('docs/errata.html') },
+    { label: '致谢', href: window.SITE.url('thanks/index.html') },
+    { label: '购买', href: window.SITE.home + '#buy' },
+    { label: '引用', href: window.SITE.home + '#cite' },
+  ];
   return `
 <footer class="footer">
   <div class="container">
-    <div class="footer-grid">
+    <div class="footer-top">
       <div class="footer-brand">
         <div class="brand"><span>${esc(book.title)}</span></div>
-        <p>${esc(book.publisher)} · ISBN ${esc(book.isbn)}<br>${esc(book.authors.join('、'))} 著</p>
+        <p>${esc(book.publisher)} · ISBN ${esc(book.isbn)} · ${esc(book.authors.join('、'))} 著</p>
       </div>
-      <div class="footer-col">
-        <h4>文档</h4>
-        ${docLinks.map((d) => `<a href="${window.SITE.url(d.href)}">${esc(d.label)}</a>`).join('')}
-      </div>
-      <div class="footer-col">
-        <h4>资源</h4>
-        <a href="${repo.url}" target="_blank" rel="noopener">token-to-llm 仓库</a>
-        <a href="${window.SITE.url('docs/examples.html')}">运行示例</a>
-        <a href="${window.SITE.home}#buy">购买</a>
-      </div>
-      <div class="footer-col">
-        <h4>关于</h4>
-        <a href="${window.SITE.url('thanks/index.html')}">致谢</a>
-        <a href="${window.SITE.url('contact/index.html')}">联系与勘误</a>
-        <a href="${repo.url}/issues" target="_blank" rel="noopener">反馈 Issue</a>
-      </div>
+      <nav class="footer-links" aria-label="页脚导航">${links
+        .map((l) => `<a href="${l.href}"${l.external ? ' target="_blank" rel="noopener"' : ''}>${esc(l.label)}</a>`)
+        .join('')}</nav>
     </div>
     <div class="footer-bottom">
       <span>© 2026 ${esc(book.authors.join(' · '))}　保留所有权利</span>
-      <span>
-        <a href="mailto:${esc(window.SITE.contact.email)}">${esc(window.SITE.contact.email)}</a>
-        　·　<a href="${window.SITE.url('thanks/index.html')}">致谢</a>
-        　·　<a href="${repo.url}" target="_blank" rel="noopener">token-to-llm</a>
-      </span>
     </div>
   </div>
 </footer>`;

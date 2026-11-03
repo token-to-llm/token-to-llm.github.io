@@ -1,6 +1,6 @@
 # 运行示例
 
-仓库 [token-to-llm](https://github.com/token-to-llm/token-to-llm) 里每个脚本都能独立跑。这里按知识点分成六页，每页说明一段脚本验证的是书里的哪一步、跑出来是什么样、结果说明了什么。
+[代码仓库](https://github.com/token-to-llm/token-to-llm) 里每个脚本都能独立跑。这里按知识点分成六页，每页说明一段脚本验证的是书里的哪一步、跑出来是什么样、结果说明了什么。
 
 <table>
 <tr>
