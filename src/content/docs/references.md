@@ -2,8 +2,6 @@
 
 全书共 **337 篇** 参考文献，编号与正文引用序号一一对应，例如 `[125]` 指第 125 条。
 
-> 引用格式为 GB/T 7714 风格，`[M]` 专著、`[J]` 期刊、`[C]` 会议、`[PP/OL]` 预印本、`[DB/OL]` 数据库、`[Z/OL]` 网络资源。每条均附访问日期，便于核对时效性。
-
 1. **RADFORD A, WU J, CHILD R, et al.** Language models are unsupervised multitask learners[Z/OL]. (2019/02/14) [2026/04/23]. https://openai.com/index/better-language-models/.
 2. **BROWN T B, MANN B, RYDER N, et al.** Language Models are Few-Shot Learners[PP/OL]. arXiv. (2020/05/28) [2026/04/23]. https://arxiv.org/abs/2005.14165. arXiv:2005.14165.
 3. **JIANG J, WANG F, SHEN J, et al.** A Survey on Large Language Models for Code Generation [PP/OL]. arXiv. (2024/06/01) [2026/04/23]. https://arxiv.org/abs/2406.00515. arXiv:2406.00515.

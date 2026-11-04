@@ -716,15 +716,6 @@ hr {
   border: 0;
 }
 
-.lec-placeholder {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  color: var(--ink-3);
-  font-size: 0.9rem;
-}
-
 .lec-cap {
   display: flex;
   align-items: center;

@@ -17,7 +17,7 @@
 | p111 | “如思维树...” | “如零样本CoT[151]，思维树...” | 补回被漏掉的术语与引用 |
 | p112 | “自动化提示词生成技术（如AutoCoT)被提出以自动构建提示示例，” | “自动化提示词技术被提出以自动构建提示，” | 删除冗余修饰并补全标点 |
 | p113 | Auto-CoT，自动化思维链 | 零样本CoT，零样本思维链 | 术语统一，同 p111 |
-| p72–p73 | 式 (4-40) 下方的 `@misc` 引用块 | 替换为以下 9 行 RMSNorm 实现代码 | 原框内容误将参考文献条目混入代码块 |
+| p72–p73 | 式 (4-40) 下方的 `@misc` 引用块 | [替换为以下 9 行 RMSNorm 实现代码](#h-p72p73-替换代码) | 原框内容误将参考文献条目混入代码块 |
 | p246 | [125] ... | `[125] AINSLIE J, LEE-THORP J, de JONG M, et al. GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints[DB/OL]. arXiv. (2023/05/22) [2026/04/23]. https://arxiv.org/abs/2305.13245. arXiv: 2305.13245.` | 原条目内容缺失 |
 | p248 | [151] ... | `[151] KOJIMA T, GU S S, REID M, et al. Large Language Models are Zero-Shot Reasoners[DB/OL]. arXiv. (2023/01/29) [2026/04/23]. https://arxiv.org/abs/2205.11916. arXiv: 2205.11916.` | 原条目内容缺失 |
 
@@ -62,10 +62,10 @@ class RMSNorm(torch.nn.Module):
 | p116 | ...输入或者本身模型为具有相关知识... | ...输入或者本身模型为不具有相关知识... | 漏掉否定词，语义反转 |
 | p118 | ...As-Vec[162] 和 N... | ...As-Vec[163] 和 N... | 引用序号错误 |
 | p145 | 算法 7.4 输出：最优状态值函数.... | 输出：状态价值函数估计 $V(s)\approx v_\pi(s)$ | 该算法估计策略价值而非最优价值 |
-| p146, p147 | $[1,0]$ | $[0,1]$ | 向量元素次序颠倒 |
+| p146, p147 | $[1,0]$ | $[0,1]$ | 值域区间顺序对调 |
 | p154 | $\hat v(s;\boldsymbol W)$ 或 $\tilde v(s;\boldsymbol W)$ 作为基线（原注：两个元素一样） | 去除一个元素 | 两种写法等价，保留其一 |
 | p158 | 算法 7.12 第 16 行 $V_{\text{old}}(s_t)$ | 算法 7.12 第 16 行 $V_{\text{old}}(S_t)$ | 状态符号大小写不一致 |
-| p167 | 式 8.1 中 $\mathcal{E}(x,y_w,y_l)[...$ | 式 8.1 中 $\mathcal{E}(x,y_w,y_l)\,[...$ | 缺少空格，公式与括号粘连 |
+| p167 | 式 8.1 中 $\mathcal{E}(x,y_w,y_l)[...$ | 式 8.1 中 $\mathbb{E}(x,y_w,y_l)\,[...$ | 期望符号应为 $\mathbb{E}$，且公式与括号粘连，缺一个空格 |
 | p169 | 算法 8.1 第 2 行（原注：去除。若按式替换，行数不变，可用“在样采样与训练”替换） | 去除该行，或替换为“在样采样与训练” | 该行重复了上一行的循环条件 |
 | p187 | Throught Output | Throughput | 拼写错误 |
 | p194 | 即 GPU $i$ 存储了梯度 $\tilde G_i=\sum_{j=1}^{n-1}G_{i+1,j}$ | $\tilde G_i=\sum_{j=0}^{n-1}G_{(i+1)\%n,\,j}$ | 环状规约的求和下标与取模说明 |
