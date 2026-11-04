@@ -77,7 +77,7 @@
       <span class="eyebrow">清华大学出版社 · 计算机教材</span>
       <h1>大语言模型：<br>训练、精调与对齐</h1>
       <p class="hero-authors"><span class="hero-authors-label">作者</span><b>杨耀东</b><i>·</i><b>邓杭</b></p>
-      <p class="hero-sub">北京大学人工智能专业大语言模型课程讲义及教材。</p>
+      <p class="hero-sub">北京大学通用人工智能专业《大模型基础与对齐》课程教材及讲义。</p>
       <div class="hero-actions">
         <a class="btn btn-primary btn-lg" id="hero-buy" href="#buy">购买本书</a>
         <a class="btn btn-lg" href="#slides">课件</a>
@@ -134,6 +134,7 @@
     <div class="tabs" id="book-tabs">
       <div class="tab-list" role="tablist" aria-label="书本框架视图">
         <button class="tab is-active" type="button" role="tab" id="tab-dir" aria-selected="true" aria-controls="panel-dir" data-tab="dir">全书目录</button>
+        <button class="tab" type="button" role="tab" id="tab-plan" aria-selected="false" aria-controls="panel-plan" tabindex="-1" data-tab="plan">课程设置</button>
         <button class="tab" type="button" role="tab" id="tab-kmap" aria-selected="false" aria-controls="panel-kmap" tabindex="-1" data-tab="kmap">知识体系</button>
         <button class="tab" type="button" role="tab" id="tab-sample" aria-selected="false" aria-controls="panel-sample" tabindex="-1" data-tab="sample">书页样张</button>
       </div>
@@ -152,6 +153,14 @@
         <div class="tab-actions">
           <a class="btn" href="src/docs/chapters.html">完整章节指引</a>
           <a class="btn" href="src/docs/teaching.html">课时安排</a>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="panel-plan" role="tabpanel" aria-labelledby="tab-plan" hidden>
+        <p class="tab-lead">全十章按一学期 <b>16 课时</b> 讲授：公式与推导密度最大的第 2、4、7、8、9、10 章各拆成上下两次课，其余四章各占一次。拆分点落在节的自然边界上，不切断一条完整的推导链。</p>
+        <div class="table-scroll"><table class="chapter-table lec-table" id="home-plan"></table></div>
+        <div class="tab-actions">
+          <a class="btn" href="src/docs/teaching.html">课时安排与课件预览</a>
         </div>
       </div>
 
@@ -545,6 +554,34 @@
       '<ul class="fold-body">' + secs + '</ul>' +
     '</details>';
   }).join('');
+
+  /* ---- 课程设置：16 课时分配表，取 assets/js/ppt16.js 的单一数据源 ---- */
+  (function planTable() {
+    const host = document.getElementById('home-plan');
+    if (!host) return;
+    const LECTURES = (window.PPT16 && window.PPT16.lectures) || [];
+    function esc(s) {
+      return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+      });
+    }
+    host.innerHTML =
+      '<thead><tr>' +
+        '<th style="width:56px">课时</th>' +
+        '<th style="width:30%">章节</th>' +
+        '<th>内容</th>' +
+        '<th style="width:32%">内容概括</th>' +
+      '</tr></thead><tbody>' +
+      LECTURES.map(function (lec) {
+        return '<tr>' +
+          '<td class="ch-no">' + String(lec.no).padStart(2, '0') + '</td>' +
+          '<td style="font-weight:600">' + esc(lec.title) + '</td>' +
+          '<td style="font-size:.86rem">' + esc(lec.sections.join('、')) + '</td>' +
+          '<td style="font-size:.86rem;color:var(--ink-2)">' + esc(lec.summary) + '</td>' +
+        '</tr>';
+      }).join('') +
+      '</tbody>';
+  })();
 
   /* ---- 课本内容：三条可展开的深入示例，统一四段式 ---- */
   const WRITING = [

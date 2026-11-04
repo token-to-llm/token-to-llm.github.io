@@ -20,7 +20,7 @@
     book: {
       title: '大语言模型：训练、精调与对齐',
       titleEn: 'Large Language Models: Training, Fine-Tuning and Alignment',
-      subtitle: '北京大学人工智能专业大语言模型课程讲义及教材。',
+      subtitle: '北京大学通用人工智能专业《大模型基础与对齐》课程教材及讲义。',
       authors: ['杨耀东', '邓杭'],
       publisher: '清华大学出版社',
       isbn: '978-7-302-71036-3',
